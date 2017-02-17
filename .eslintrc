@@ -1,16 +1,11 @@
 {
-    "extends": ["mourner",
-        "plugin:react/recommended"],
-        "parserOptions": {
-        "sourceType": "module",
-            "ecmaFeatures": {
-            "jsx": true
-        }
-    },
-    "plugins": [
-        "react"
-    ],
-        "globals": {
-        "mapboxgl": true
+    // ...
+    "extends": "react-app",
+    "rules": {
+        "indent": ["warn", 4],
+        "react/jsx-indent": [
+            "warn",
+            2
+        ]
     }
 }

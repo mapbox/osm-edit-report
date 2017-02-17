@@ -1,10 +1,19 @@
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import React, {Component} from 'react';
 import logo from './logo.svg';
+import {getStats} from './store/actions';
 
 class App extends Component {
+    static propTypes = {
+        actions: React.PropTypes.object,
+    }
+
     render() {
         return (
-          <div className="App">
+          <div className="App" onClick={() => {
+              this.props.actions.getStats();
+          }}>
             <div className="App-header">
               <img src={logo} className="App-logo" alt="logo" />
               <h2>Welcome to React</h2>
@@ -18,4 +27,8 @@ class App extends Component {
     }
 }
 
-export default App;
+App = connect(state => state, (dispatch) => ({
+    actions: bindActionCreators({getStats}, dispatch)
+}))(App);
+
+export default (App);
