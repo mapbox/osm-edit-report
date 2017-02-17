@@ -16,5 +16,14 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
-  }
+  },
+    "repository": {
+      "type": "git",
+      "url": "https://github.com/mapbox/osm-edit-report-v2.git"
+    },
+    "author": "Mapbox",
+    "bugs": {
+      "url": "https://github.commapbox/osm-edit-report-v2/issues"
+    },
+    "homepage": "https://hey.mapbox.com/osm-edit-report-v2"
 }
