@@ -1,0 +1,16 @@
+{
+    "extends": ["mourner",
+        "plugin:react/recommended"],
+        "parserOptions": {
+        "sourceType": "module",
+            "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": [
+        "react"
+    ],
+        "globals": {
+        "mapboxgl": true
+    }
+}
