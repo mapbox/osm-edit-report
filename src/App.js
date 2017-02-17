@@ -3,26 +3,32 @@ import {bindActionCreators} from 'redux';
 import React, {Component} from 'react';
 import logo from './logo.svg';
 import {getStats} from './store/actions';
+import Header from './components/Header';
+import Body from './components/Body';
 
 class App extends Component {
     static propTypes = {
         actions: React.PropTypes.object,
     }
+    constructor(props) {
+        super(props);
+        props.actions.getStats();
+    }
+
 
     render() {
         return (
-          <div className="App" onClick={() => {
-              this.props.actions.getStats();
-          }}>
-            <div className="App-header">
-              <img src={logo} className="App-logo" alt="logo" />
-              <h2>Welcome to React</h2>
+            <div className="viewport-full">
+                <Header />
+                <Body />
+                <div className="flex-parent flex-parent--column">
+                {
+                    Array.isArray(this.props.stats) && this.props.stats.map((e,i) => {
+                            return <div key={i} className="m6 color-gray-dark bg-yellow-light flex-child">{JSON.stringify(e, null, 2)}</div>
+                    })  
+                }
+                </div>
             </div>
-            <p className="App-intro">
-              To get started, edit <code>src/App.js</code> and save to reload.
-            </p>
-            <svg className="icon"><use xlinkHref="#icon-bike"/></svg>
-          </div>
         );
     }
 }
@@ -32,3 +38,4 @@ App = connect(state => state, (dispatch) => ({
 }))(App);
 
 export default (App);
+

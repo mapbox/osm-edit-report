@@ -5,7 +5,7 @@
         "indent": ["warn", 4],
         "react/jsx-indent": [
             "warn",
-            2
+            4
         ]
     }
 }

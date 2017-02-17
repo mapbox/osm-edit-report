@@ -10,7 +10,6 @@ import './dev/reactotron';
 import App from './App';
 import store from './store';
 
-console.log(process.env);
 ReactDOM.render(
   <Provider store={store}>
     <App />
