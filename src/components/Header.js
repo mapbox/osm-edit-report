@@ -1,14 +1,27 @@
 import React from 'react';
+import FilterBar from './FilterBar';
+import NavBar from './NavBar';
 
-export default () => 
-    <nav>
-        <a className='pad6 flex-parent-inline btn color-blue color-white-on-active bg-transparent bg-darken5-on-hover bg-blue-on-active txt-s ml3 is-active' href='#'>
-            <svg className='icon mr3'><use xlinkHref='#icon-home'/></svg> Home
-        </a>
-        <a className='flex-parent-inline btn color-blue color-white-on-active bg-transparent bg-darken5-on-hover bg-blue-on-active txt-s ml3' href='#'>
-            <svg className='icon mr3'><use xlinkHref='#icon-user'/></svg> Account
-  </a>
-        <a className='flex-parent-inline btn color-blue color-white-on-active bg-transparent bg-darken5-on-hover bg-blue-on-active txt-s ml3' href='#'>
-            <svg className='icon mr3'><use xlinkHref='#icon-logout'/></svg> Logout
-  </a>
-    </nav>
+export default class Header extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            showFilterBar: false
+        }
+    }
+    toggleFilterBar= () => {
+        this.setState({
+            showFilterBar: !this.state.showFilterBar
+        });
+    }
+    render() {
+        return (
+            <div className="">
+                <NavBar showFilterBar={this.state.showFilterBar} toggleFilterBar={this.toggleFilterBar} />
+                {this.state.showFilterBar ?
+                    <FilterBar />
+                    : null}
+            </div>
+        );
+    }
+}

@@ -12,7 +12,7 @@ if (process.env.REACT_APP_LOGGER === 'tron') {
     .use(trackGlobalErrors({ offline: false }))
     .connect()
 
-  // Reactotron.clear()
+  Reactotron.clear()
   api.addMonitor(Reactotron.apisauce)
   console.tron = Reactotron
 }
