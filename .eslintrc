@@ -6,6 +6,7 @@
         "react/jsx-indent": [
             "warn",
             4
-        ]
+        ],
+        "no-console": ["warn"]
     }
 }

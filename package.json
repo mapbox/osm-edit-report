@@ -21,7 +21,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "start:tron": "LOGGER=tron && npm run start",
+    "start:tron": "REACT_APP_LOGGER=tron npm run start",
     "test": "react-scripts test --env=jsdom",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build -o origin -b hey-pages",
