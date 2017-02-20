@@ -20,6 +20,13 @@ function networkError(error) {
     };
 }
 
+export function setFilter(filter) {
+    return {
+        type: 'SET_FILTER',
+        filter
+    };
+}
+
 export function getStats() {
     return dispatch => {
         dispatch(requestStats());
