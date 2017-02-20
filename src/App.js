@@ -8,7 +8,7 @@ import Body from './components/Body';
 
 class App extends Component {
     static propTypes = {
-        actions: React.PropTypes.object,
+        actions: React.PropTypes.object
     }
 
     constructor(props) {
