@@ -1,14 +1,21 @@
 import {combineReducers} from 'redux';
 
-function stats(state = [], action) {
+
+function stats(state = {}, action) {
     switch (action.type) {
     case 'RECEIVE_STATS': {
-        return action.data.data;
+        return {
+            ...state,
+            rawData: action.data.data
+        }
     }
     case 'REQUEST_STATS':
     case 'NETWORK_ERROR':
     default:
-        return state;
+        return {
+            ...state,
+            rawData: []
+        };
     }
 }
 
