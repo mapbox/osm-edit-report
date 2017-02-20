@@ -16,7 +16,7 @@ export default class FiltersBar extends React.Component {
         }
         this._debouncedUpdate = debounce(() => {
             this.props.handleFilters(this.state);
-        }, 700);
+        }, 1400);
     }
     handleBbox = (e) => {
         this.setState({
