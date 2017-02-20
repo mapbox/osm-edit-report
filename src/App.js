@@ -18,7 +18,7 @@ class App extends Component {
 
     render() {
         return (
-            <div className="viewport-full">
+            <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">
                 <Header />
                 <Body />
                 <div className="flex-parent flex-parent--column">
