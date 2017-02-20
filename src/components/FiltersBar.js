@@ -1,88 +1,55 @@
-import React from 'react';
-import debounce from 'lodash.debounce';
+import React from "react";
+import debounce from "lodash.debounce";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import { Field, reduxForm } from "redux-form";
+import { connect } from 'react-redux';
 
-export default class FiltersBar extends React.Component {
-    static propTypes = {
-        handleFilters: React.PropTypes.func,
-        filters: React.PropTypes.object
-    }
-    constructor(props) {
-        super(props);
-        this.state = {
-            tags: this.props.filters.tags || '',
-            bbox: this.props.filters.bbox || '',
-            time: this.props.filters.time || '',
-            users: this.props.filters.users || '',
-        }
-        this._debouncedUpdate = debounce(() => {
-            this.props.handleFilters(this.state);
-        }, 1400);
-    }
-    handleBbox = (e) => {
-        this.setState({
-            bbox: e.target.value
-        });
-        this._debouncedUpdate();
-    }
-    handleUsers = (e) => {
-        this.setState({
-            users: e.target.value
-        });
-        this._debouncedUpdate();
-    }
-    handleTags = (e) => {
-        this.setState({
-            tags: e.target.value
-        });
-        this._debouncedUpdate();
-    }
-    handleTime = (e) => {
-        this.setState({
-            time: e.target.value
-        });
-        this._debouncedUpdate();
-    }
+const DateField = ({ input }) => {
+    const { value, onChange } = input;
+    return (
+        <DatePicker
+            selected={value}
+            onChange={onChange}
+        />
+    )
+};
+
+class FiltersBar extends React.Component {
     render() {
-
+        const { handleSubmit } = this.props;
         return (
-            <div className="border border--gray-light p12 round-b border-t--0">
+            <form onSubmit={handleSubmit} className="border border--gray-light p12 round-b border-t--0">
                 <nav>
                     <div className="flex-parent flex-parent--row space-between">
                         <div className="flex-child">
-                            <input className='input' value={this.state.users} placeholder='Users' onChange={this.handleUsers} />
+                            <Field className="input" placeholder="Users" component="input" type="text" name="users" />
                         </div>
                         <div className="flex-child">
-                            <input className='input' value={this.state.tags} placeholder='Tags' onChange={this.handleTags} />
+                            <Field className="input" placeholder="Tags" component="input" type="text" name="tags" />
+                        </div>
+                        <div className="flex-child"> 
+                            <Field component={DateField} placeholder="From" name="dateFrom" />
                         </div>
                         <div className="flex-child">
-                            <input className='input' value={this.state.time} placeholder='Time' onChange={this.handleTime} />
+                            <Field component={DateField} placeholder="To" name="dateTo" />
                         </div>
                         <div className="flex-child">
-                            <input className='input' value={this.state.bbox} placeholder='Bbox' onChange={this.handleBbox} />
+                            <Field className="input" placeholder="Bbox" component="input" type="text" name="bbox" />
                         </div>
                     </div>
+                    <button type="submit">Submit</button>
                 </nav>
-            </div>
+            </form>
         )
     }
     
-}({ users, showFiltersBar, handleUsers, handleTags, handleTime, handleBbox }) => (
-    <div className="border border--gray-light p12 round-b border-t--0">
-        <nav>
-            <div className="flex-parent flex-parent--row space-between">
-                <div className="flex-child">
-                    <input className='input' placeholder='Users' onChange={handleUsers} />
-                </div>
-                <div className="flex-child">
-                    <input className='input' placeholder='Tags' onChange={handleTags} />
-                </div>
-                <div className="flex-child">
-                    <input className='input' placeholder='Time' onChange={handleTime} />
-                </div>
-                <div className="flex-child">
-                    <input className='input' placeholder='Bbox' onChange={handleBbox} />
-                </div>
-            </div>
-        </nav>
-    </div>
-);
+}
+
+FiltersBar = reduxForm({
+    form: "filters"
+})(FiltersBar);
+
+export default FiltersBar;
+

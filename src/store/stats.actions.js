@@ -1,4 +1,5 @@
 import api from './api';
+import moment from 'moment';
 
 function requestStats() {
     return {
@@ -30,19 +31,21 @@ export function setFilter(filter) {
 export function getStats(filters) {
     var params = [];
     if (filters) {
-        const { users, time, tags, bbox } = filters;
-        if (users && Array.isArray(users)) {
-            params.push(`users=${users.join(',')}`);
+        const { users, dateFrom, dateTo, tags, bbox } = filters;
+        if (users) {
+            params.push(`users=${users}`);
         }
-        if (time && time.from && time.to) {
-            params.push(`from=${time.from}`);
-            params.push(`to=${time.to}`);
+        if (moment.isMoment(dateFrom)) {
+            params.push(`from=${dateFrom.utc().format()}`);
         }
-        if (tags && Array.isArray(tags)) {
-            params.push(`tags=${tags.join(',')}`);
+        if (moment.isMoment(dateTo)) {
+            params.push(`to=${dateTo.utc().format()}`);
         }
-        if (bbox && Array.isArray(bbox)) {
-            params.push(`bbox=${bbox.join(',')}`);
+        if (tags) {
+            params.push(`tags=${tags}`);
+        }
+        if (bbox) {
+            params.push(`bbox=${bbox}`);
         }
     }
     return dispatch => {

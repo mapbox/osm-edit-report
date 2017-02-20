@@ -1,5 +1,8 @@
 import {combineReducers} from 'redux';
-import filter from './filter';
+// import filter from './filter.action';
+import { reducer as formReducer } from 'redux-form'
+import { getUrlParam, setUrlParams } from '../helper';
+import moment from 'moment';
 
 function stats(state = {}, action) {
     switch (action.type) {
@@ -20,5 +23,24 @@ function stats(state = {}, action) {
     }
 
 }
+const filterState = {
+    users: getUrlParam('users') || undefined,
+    tags: getUrlParam('tags') || undefined,
+    dateFrom: getUrlParam('dateFrom') && moment(getUrlParam('dateFrom')),
+    dateTo: getUrlParam('dateTo') && moment(getUrlParam('dateTo'))
+}
 
-export default combineReducers({stats});
+function filters(state = filterState, action) {
+    switch (action.type) {
+    case 'SET_FILTERS': {
+        setUrlParams(action.filters);
+        return {
+            ...action.filters
+        };
+    }
+    default:
+        return state;
+    }
+}
+
+export default combineReducers({ stats, filters, form: formReducer});

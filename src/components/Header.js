@@ -1,10 +1,20 @@
 import React from 'react';
 import FiltersBar from './FiltersBar';
 import NavBar from './NavBar';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { setFilters } from '../store/filters.action';
+import { getStats } from '../store/stats.actions';
 
-export default class Header extends React.Component {
+class Header extends React.Component {
     static propTypes = {
-        getStats: React.PropTypes.func
+        getStats: React.PropTypes.func,
+        setUsers: React.PropTypes.func,
+        setBbox: React.PropTypes.func,
+        setDateFrom: React.PropTypes.func,
+        setDateTo: React.PropTypes.func,
+        setTags: React.PropTypes.func,
+        filters: React.PropTypes.object
     }
     constructor(props) {
         super(props);
@@ -19,32 +29,23 @@ export default class Header extends React.Component {
         });
     }
     handleFilters = (filters) => {
-        this.setState({
-            filters
-        });
-        this.applyFilters();
-    }
-    applyFilters = () => {
-        var filters = {};
-        Object.assign(filters, this.state.filters);
-    
-        if (filters.users) {
-            filters.users = filters.users.split(' ');
-        }
-        if (filters.tags) {
-            filters.tags = filters.tags.split(' ');
-        }
-        console.log('applying', this.state.filters);
+        this.props.setFilters(filters);
         this.props.getStats(filters);
     }
     render() {
         return (
             <div className="">
                 <NavBar showFiltersBar={this.state.showFiltersBar} toggleFiltersBar={this.toggleFiltersBar} />
-                {this.state.showFiltersBar ?
-                    <FiltersBar handleFilters={this.handleFilters} filters={this.state.filters} />
-                    : null}
+                <div style={{ display: this.state.showFiltersBar ? 'block': 'none'}}>
+                    <FiltersBar initialValues={this.props.filters} onSubmit={this.handleFilters}/>
+                </div>
             </div>
         );
     }
 }
+
+Header = connect(state => state, (dispatch) => ({
+    ...bindActionCreators({ getStats, setFilters }, dispatch)
+}))(Header);
+
+export default  Header;
