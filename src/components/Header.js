@@ -1,25 +1,32 @@
 import React from 'react';
-import FilterBar from './FilterBar';
+import FiltersBar from './FiltersBar';
 import NavBar from './NavBar';
 
 export default class Header extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showFilterBar: false
+            showFiltersBar: false,
+            filters: {}
         }
     }
-    toggleFilterBar= () => {
+    toggleFiltersBar= () => {
         this.setState({
-            showFilterBar: !this.state.showFilterBar
+            showFiltersBar: !this.state.showFiltersBar
+        });
+    }
+    handleFilters = (filters) => {
+        console.log(filters);
+        this.setState({
+            filters
         });
     }
     render() {
         return (
             <div className="">
-                <NavBar showFilterBar={this.state.showFilterBar} toggleFilterBar={this.toggleFilterBar} />
-                {this.state.showFilterBar ?
-                    <FilterBar />
+                <NavBar showFiltersBar={this.state.showFiltersBar} toggleFiltersBar={this.toggleFiltersBar} />
+                {this.state.showFiltersBar ?
+                    <FiltersBar handleFilters={this.handleFilters} filters={this.state.filters} />
                     : null}
             </div>
         );

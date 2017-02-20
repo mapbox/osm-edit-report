@@ -19,11 +19,11 @@ class App extends Component {
     render() {
         return (
             <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">
-                <Header />
+                <Header getStats={this.props.actions.getStats}/>
                 <Body />
                 <div className="flex-parent flex-parent--column">
                     {
-                        Array.isArray(this.props.stats.rawData) && this.props.stats.rawData.map((e,i) => {
+                        Array.isArray(this.props.stats.data) && this.props.stats.data.map((e,i) => {
                             return <div key={i} className="m6 color-gray-dark bg-yellow-light flex-child">{JSON.stringify(e, null, 2)}</div>
                         })  
                     }

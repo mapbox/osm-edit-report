@@ -3,16 +3,16 @@ import filter from './filter';
 
 function stats(state = {}, action) {
     switch (action.type) {
-    case 'SET_FILTER': {
+    case 'RECEIVE_STATS': {
         return {
             ...state,
-            filterData: filter(state.rawData, action.filter)
+            data: action.data.data
         }
     }
     case 'NETWORK_ERROR':
         return {
             ...state,
-            rawData: []
+            data: []
         }
     case 'REQUEST_STATS':
     default:
