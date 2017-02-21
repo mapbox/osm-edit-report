@@ -28,7 +28,6 @@ class UsersField extends React.Component{
     }
     render() {
         const { value } = this.props.input;
-        console.log(value);
         const data = dataTeam.getEverything();
         const _value = value  && value.split(',').map(v => {
             let name;
@@ -43,7 +42,6 @@ class UsersField extends React.Component{
                 value: v
             };
         });
-        console.log(_value);
         return (
             <Select
                 multi
@@ -91,6 +89,7 @@ class TagSelect extends React.Component {
         return (
             <div>
                 <AsyncCreatable
+                    promptTextCreator={(label) => `Add ${label} tag`}
                     multi
                     value={_value}
                     onChange={this._onChange}
