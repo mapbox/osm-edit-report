@@ -16,7 +16,7 @@ export function setUrlParams(obj) {
 export function setUrlParam(keyArg, valueArg) {
     var hash = window.location.hash;
     var parsed = queryString.parse(location.search);
-    if (!valueArg) {
+    if (!valueArg || valueArg === '') {
         delete parsed[keyArg];
     } else {
         parsed[keyArg] = valueArg;

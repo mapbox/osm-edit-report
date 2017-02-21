@@ -23,8 +23,8 @@ class App extends Component {
                 <Body />
                 <div className="flex-parent flex-parent--column">
                     {
-                        this.props.stats.data && Object.keys(this.props.stats.data).map((e,i) => {
-                            return <div key={i} className="m6 color-gray-dark bg-yellow-light flex-child">{JSON.stringify(this.props.stats.data[e], null, 2)}</div>
+                        this.props.stats.data && Object.keys(this.props.stats.data.getRawData()).map((e,i) => {
+                            return <div key={i} className="m6 color-gray-dark bg-yellow-light flex-child">{JSON.stringify(this.props.stats.data.getRawData()[e], null, 2)}</div>
                         })  
                     }
                 </div>

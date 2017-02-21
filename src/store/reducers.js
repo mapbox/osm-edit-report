@@ -1,15 +1,17 @@
 import {combineReducers} from 'redux';
+import moment from 'moment';
 // import filter from './filter.action';
 import { reducer as formReducer } from 'redux-form'
 import { getUrlParam, setUrlParams } from '../helper';
-import moment from 'moment';
+import StatsData from '../data';
+
 
 function stats(state = {}, action) {
     switch (action.type) {
     case 'RECEIVE_STATS': {
         return {
             ...state,
-            data: action.data.data
+            data: new StatsData(action.data.data)
         }
     }
     case 'NETWORK_ERROR':
