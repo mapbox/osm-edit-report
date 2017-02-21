@@ -17,7 +17,7 @@ function stats(state = {}, action) {
     case 'NETWORK_ERROR':
         return {
             ...state,
-            data: []
+            data: undefined
         }
     case 'REQUEST_STATS':
     default:
