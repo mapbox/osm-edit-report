@@ -6,12 +6,37 @@ export function getUrlParam(n) {
     return parsed[n];
 }
 export function setUrlParams(obj) {
-    Object.keys(obj).forEach(k => {
-        if (moment.isMoment(obj[k])) {
-            return setUrlParam(k, obj[k].utc().format());
-        }
-        setUrlParam(k, obj[k]);
-    });
+    if (obj.dateFrom && moment.isMoment(obj.dateFrom)) {
+        setUrlParam('dateFrom', obj.dateFrom.utc().format());
+    } else {
+        setUrlParam('dateFrom', '');
+    }
+
+    if (obj.dateTo && moment.isMoment(obj.dateTo)) {
+        setUrlParam('dateTo', obj.dateTo.utc().format());
+    } else {
+        setUrlParam('dateTo', '');
+    }
+
+    if (obj.tags) {
+        setUrlParam('tags', obj.tags);
+    } else {
+        setUrlParam('tags', '');
+    }
+
+    if (obj.users) {
+        setUrlParam('users', obj.users);
+    } else {
+        setUrlParam('users', '');
+    }
+
+    if (obj.bbox) {
+        setUrlParam('bbox', obj.bbox);
+    } else {
+        setUrlParam('bbox', '');
+    }
+
+    
 }
 export function setUrlParam(keyArg, valueArg) {
     var hash = window.location.hash;
