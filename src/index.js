@@ -1,7 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {Provider} from 'react-redux';
-import './css/assembly.css';
+
 import './css/App.css';
 
 // Dev tools
