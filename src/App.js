@@ -13,7 +13,7 @@ class App extends Component {
 
     constructor(props) {
         super(props);
-        props.actions.getStats();
+        props.actions.getStats(props.filters);
     }
 
     render() {
@@ -23,9 +23,9 @@ class App extends Component {
                 <Body />
                 <div className="flex-parent flex-parent--column">
                     {
-                    Array.isArray(this.props.stats) && this.props.stats.map((e,i) => {
-                        return <div key={i} className="m6 color-gray-dark bg-yellow-light flex-child">{JSON.stringify(e, null, 2)}</div>
-                    })  
+                        this.props.stats.data && Object.keys(this.props.stats.data.getRawData()).map((e,i) => {
+                            return <div key={i} className="m6 color-gray-dark bg-yellow-light flex-child">{JSON.stringify(this.props.stats.data.getRawData()[e], null, 2)}</div>
+                        })  
                     }
                 </div>
             </div>
