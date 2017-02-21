@@ -1,8 +1,8 @@
 import React from 'react';
 
 
-export default ({ users, showFilterBar, toggleFilterBar }) => (
-    <div className={`border border--gray-light p12 round-t ${!showFilterBar ? 'round-b' : ''}`}>
+export default ({ users, showFiltersBar, toggleFiltersBar }) => (
+    <div className={`border border--gray-light p12 round-t ${!showFiltersBar ? 'round-b' : ''}`}>
         <nav>
             <div className="flex-parent flex-parent--row-ml  flex-parent--row-mxl flex-parent--column space-between">
                 <div className="flex-child">
@@ -15,7 +15,7 @@ export default ({ users, showFilterBar, toggleFilterBar }) => (
                         <FilterButton>filer1</FilterButton>
                     </div>
                     <div className="header-button flex-child">
-                        <a onClick={toggleFilterBar} className='flex-parent-inline btn color-blue color-white-on-active bg-transparent bg-darken5-on-hover bg-blue-on-active txt-s ml3 is-active' href='#'>
+                        <a onClick={toggleFiltersBar} className='flex-parent-inline btn color-blue color-white-on-active bg-transparent bg-darken5-on-hover bg-blue-on-active txt-s ml3 is-active' href='#'>
                             <svg className='icon mr3'><use xlinkHref='#icon-inspect'/></svg>
                         </a>
                     </div>
