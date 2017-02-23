@@ -32,6 +32,11 @@ const filterState = {
     dateTo: getUrlParam('dateTo') && moment(getUrlParam('dateTo'))
 }
 
+if (!filterState.dateFrom) { 
+    filterState.dateFrom = moment().subtract(7, 'd');
+    filterState.dateTo = moment()
+}
+
 function filters(state = filterState, action) {
     switch (action.type) {
     case 'SET_FILTERS': {
