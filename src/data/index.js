@@ -4,7 +4,6 @@ import dataTeam from 'mapbox-data-team';
 
 var usernames = dataTeam.getUsernames();
 /* Utils */
-window.R = R;
 // mapValues :: (v -> v) -> Object -> Object
 const mapValues = R.curry((fn, obj) =>
     R.fromPairs(R.map(R.adjust(fn, 1), R.toPairs(obj))));
