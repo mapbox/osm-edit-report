@@ -1,7 +1,6 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import React, {Component} from 'react';
-// import logo from './logo.svg';
 import {getStats} from './store/stats.actions';
 import Header from './components/Header';
 import Body from './components/Body';
@@ -54,4 +53,3 @@ App = connect(state => state, (dispatch) => ({
 }))(App);
 
 export default (App);
-
