@@ -1,55 +1,99 @@
 import R from 'ramda';
 import moment from 'moment';
+import dataTeam from 'mapbox-data-team';
 
+var usernames = dataTeam.getUsernames();
 /* Utils */
-
-// mapKeys :: (k -> k) -> Object -> Object
-const mapKeys = R.curry((fn, obj) =>
-  R.fromPairs(R.map(R.adjust(fn, 0), R.toPairs(obj))));
-
+window.R = R;
 // mapValues :: (v -> v) -> Object -> Object
 const mapValues = R.curry((fn, obj) =>
-  R.fromPairs(R.map(R.adjust(fn, 1), R.toPairs(obj))));
+    R.fromPairs(R.map(R.adjust(fn, 1), R.toPairs(obj))));
 
-// listifyValues :: {k: v} -> {k: [v]}
-const listifyValues = mapValues(R.prepend(R.__, []));
-
-// concatValues :: {k: [v]} -> {k: [v]} -> {k: [v]}
+// {k: [v]} -> {k: [v]} -> {k: [v]}
 const concatValues = R.mergeWith(R.concat);
 
-const transformDate = R.curry((unit, date) => moment(date).startOf(unit).toISOString());
+const transformDate = R.curry((unit, date) => moment(date).startOf(unit).utc().format());
+
+// data -> [names]
+const getAllUserNames = R.compose(R.uniq, R.flatten, R.map(R.keys), R.values);
+
+// name -> data -> [{edits}]
+const getEditsByName = (name) => R.compose(sumEditObjs, R.filter(R.identity), R.pluck(name), R.values);
 
 /* Transforms */
 
 // type Data = {time:{user:{edit},...}
-
 // getEdits :: Data -> [{edits}]
 const getEdits = R.pipe(R.values, R.map(R.values), R.flatten);
 
 // getEditsByUser :: Data -> {user:[{edits}]}
-const getEditsByUser = R.pipe(R.values, R.map(listifyValues), R.reduce(concatValues, {}));
+const getEditsByUser = (data) => R.zipObj(
+        usernames, 
+        R.juxt(usernames.map(getEditsByName))(data)
+    );
 
 // getEditsByTime :: Data -> {time:[{edits}]}
-const getEditsByTime = R.curry((unit) =>
+const getEditsByTime = (unit) =>
     R.pipe(R.toPairs,
         R.map(([date, edits]) => R.fromPairs([[transformDate(unit)(date), R.values(edits)]])),
-        R.reduce(concatValues, {})));
+        R.reduce(concatValues, {}),
+        mapValues(sumEditObjs));
 
-const getEditsByDay = getEditsByTime('day');
-const getEditsByWeek = getEditsByTime('week');
-const getEditsByMonth = getEditsByTime('month');
-const getEditsByYear = getEditsByTime('year');
+// [{edit}] -> {editSummed}
+function sumEditObjs(editArray) {
+    var infoKeys = ['nodes', 'ways', 'relations', 'tags_created', 'tags_modified', 'tags_deleted', 'changesets'];
+    const pluck = R.map(R.pluck, infoKeys);
+    // adds an array of similar object [{obj}] -> {obj}
+    const addSameObjs = R.reduce(R.mergeWith(R.add), {});
+ 
+    
+    let zip = R.zipObj(infoKeys, R.juxt(pluck)(editArray))
+    // zip = nodes: {c,m,d}, ways: {c,m,d}, rel: {c,m,d}
+    const nodes = addSameObjs(zip.nodes);
+    const ways = addSameObjs(zip.ways);
+    const relations = addSameObjs(zip.relations);
+    const objects = addSameObjs([nodes, ways, relations]);
+
+
+    /**
+     * Tags Struct
+     * tags: [{
+     *          osmTagKey: {
+     *              osmTagValue1: value,
+     *              osmTagValue2: value
+     *          }
+     *      }, {..}]
+     * 
+     */
+
+    const get2ndLevelTags = R.compose(R.sum, R.flatten, R.map(R.values), R.values);
+    const getTags = R.compose(R.sum, R.map(get2ndLevelTags));
+    return {
+        nodes,
+        ways,
+        relations,
+        objects,
+        changesets: R.flatten(zip.changesets).length,
+        tagsModified: getTags(zip.tags_modified),
+        tagsChanged: getTags(zip.tags_created),
+        tagsDeleted: getTags(zip.tags_deleted)
+    };
+}
 
 export default class Data {
     constructor(data) {
         this._data = data;
-
         this._edits  = getEdits(data);
         this._byUser = getEditsByUser(data);
-        this._byDay = getEditsByDay(data);
-        this._byWeek = getEditsByWeek(data);
-        this._byMonth = getEditsByMonth(data);
-        this._byYear = getEditsByYear(data);
+        this._byTime = {
+            day: getEditsByTime('day')(data),
+            week: getEditsByTime('week')(data),
+            month: getEditsByTime('month')(data),
+        }
+        window.data = this;
+    }
+    getAllUsers() {
+        return this._byUser;
     }
     getRawData() {
         return this._data;
@@ -60,7 +104,8 @@ export default class Data {
     getByUser(username = []) {
         return null;
     }
-    getByTime() {
-        return null;
+    getByTime(t) {
+        return this._byTime[t];
     }
 }
+
