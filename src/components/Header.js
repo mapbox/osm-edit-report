@@ -24,6 +24,7 @@ class Header extends React.Component {
             selectedFilter: null
         }
     }
+
     toggleTags = () => {
         if (this.state.selectedFilter === 'tags') {
             return this.setState({ selectedFilter: null });
@@ -31,7 +32,6 @@ class Header extends React.Component {
         this.setState({ selectedFilter: 'tags'});
     }
     toggleUsers = () => {
-        console.log('hola')
         if (this.state.selectedFilter === 'users') {
             return this.setState({ selectedFilter: null });
         }
@@ -57,8 +57,9 @@ class Header extends React.Component {
                     toggleUsers={this.toggleUsers}
                     toggleTags={this.toggleTags}
                     selectedFilter={this.state.selectedFilter}
+                    filters={this.props.filters}
                     />
-                <div>
+                <div className="grid">
                     {this.state.selectedFilter ?
                         <FiltersBar
                             selectedFilter={this.state.selectedFilter}
