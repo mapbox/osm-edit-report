@@ -4,3 +4,10 @@
 .space-around {
     justify-content: space-around;
 }
+
+.align-items--center {
+    align-items: center;
+}
+.btn-border--1 {
+    border-width: 1px;
+}

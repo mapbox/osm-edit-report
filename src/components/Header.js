@@ -16,28 +16,57 @@ class Header extends React.Component {
         setTags: React.PropTypes.func,
         filters: React.PropTypes.object
     }
+
     constructor(props) {
         super(props);
         this.state = {
             showFiltersBar: false,
-            filters: {}
+            selectedFilter: null
         }
     }
-    toggleFiltersBar= () => {
-        this.setState({
-            showFiltersBar: !this.state.showFiltersBar
-        });
+    toggleTags = () => {
+        if (this.state.selectedFilter === 'tags') {
+            return this.setState({ selectedFilter: null });
+        }
+        this.setState({ selectedFilter: 'tags'});
     }
-    handleFilters = (filters) => {
+    toggleUsers = () => {
+        console.log('hola')
+        if (this.state.selectedFilter === 'users') {
+            return this.setState({ selectedFilter: null });
+        }
+        this.setState({ selectedFilter: 'users' });
+    }
+    toggleDate = () => {
+        if (this.state.selectedFilter === 'date') {
+            return this.setState({ selectedFilter: null });
+        }
+        this.setState({ selectedFilter: 'date' });
+    }
+
+    onChange = (filters) => {
         this.props.setFilters(filters);
         this.props.getStats(filters);
     }
+
     render() {
         return (
             <div className="">
-                <NavBar showFiltersBar={this.state.showFiltersBar} toggleFiltersBar={this.toggleFiltersBar} />
-                <div style={{ display: this.state.showFiltersBar ? 'block': 'none'}}>
-                    <FiltersBar initialValues={this.props.filters} onSubmit={this.handleFilters}/>
+                <NavBar 
+                    toggleDate={this.toggleDate}
+                    toggleUsers={this.toggleUsers}
+                    toggleTags={this.toggleTags}
+                    selectedFilter={this.state.selectedFilter}
+                    />
+                <div>
+                    {this.state.selectedFilter ?
+                        <FiltersBar
+                            selectedFilter={this.state.selectedFilter}
+                            filterValues={this.props.filters}
+                            onChange={this.onChange}
+                        /> : null
+            }
+                    
                 </div>
             </div>
         );
