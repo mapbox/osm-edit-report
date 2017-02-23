@@ -35,16 +35,21 @@ const getEditsByTime = R.curry((unit) =>
         R.map(([date, edits]) => R.fromPairs([[transformDate(unit)(date), R.values(edits)]])),
         R.reduce(concatValues, {})));
 
+const getEditsByDay = getEditsByTime('day');
+const getEditsByWeek = getEditsByTime('week');
+const getEditsByMonth = getEditsByTime('month');
+const getEditsByYear = getEditsByTime('year');
+
 export default class Data {
     constructor(data) {
         this._data = data;
 
         this._edits  = getEdits(data);
         this._byUser = getEditsByUser(data);
-        this._byDay = getEditsByTime('day')(data);
-        this._byWeek = getEditsByTime('week')(data);
-        this._byMonth = getEditsByTime('month')(data);
-        this._byYear = getEditsByTime('year')(data);
+        this._byDay = getEditsByDay(data);
+        this._byWeek = getEditsByWeek(data);
+        this._byMonth = getEditsByMonth(data);
+        this._byYear = getEditsByYear(data);
     }
     getRawData() {
         return this._data;
