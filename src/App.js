@@ -1,11 +1,12 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import React, {Component} from 'react';
-import {getStats} from './store/stats.actions';
+import {getStats, closeErrorModal} from './store/stats.actions';
 import Header from './components/Header';
 import Body from './components/Body';
 import Section from './components/Section';
 import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
+import ErrorModal from './components/ErrorModal';
 const data = [
     { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
     { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
@@ -26,9 +27,17 @@ class App extends Component {
     }
 
     render() {
+        const { showErrorModal, errorMessage } = this.props.modals;
+        const { closeErrorModal } = this.props.actions;
+
         return (
             <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">
                 <Header />
+                <ErrorModal
+                    showModal={showErrorModal}
+                    message={errorMessage}
+                    onClose={closeErrorModal}
+                />
                 <div className="flex-parent flex-parent--column align-items--center">
                     <Section title="Last week">
                         <BarChart width={600} height={300} data={data}
@@ -49,7 +58,7 @@ class App extends Component {
 }
 
 App = connect(state => state, (dispatch) => ({
-    actions: bindActionCreators({getStats}, dispatch)
+    actions: bindActionCreators({getStats, closeErrorModal}, dispatch)
 }))(App);
 
 export default (App);
