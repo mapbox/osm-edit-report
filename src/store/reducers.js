@@ -1,10 +1,8 @@
-import {combineReducers} from 'redux';
 import moment from 'moment';
-// import filter from './filter.action';
-import { reducer as formReducer } from 'redux-form'
+import {combineReducers} from 'redux';
+
 import { getUrlParam, setUrlParams } from '../helper';
 import StatsData from '../data';
-
 
 function stats(state = {}, action) {
     switch (action.type) {
@@ -25,6 +23,7 @@ function stats(state = {}, action) {
     }
 
 }
+
 const filterState = {
     users: getUrlParam('users') || undefined,
     tags: getUrlParam('tags') || undefined,
@@ -32,7 +31,7 @@ const filterState = {
     dateTo: getUrlParam('dateTo') && moment(getUrlParam('dateTo'))
 }
 
-if (!filterState.dateFrom) { 
+if (!filterState.dateFrom) {
     filterState.dateFrom = moment().subtract(7, 'd');
     filterState.dateTo = moment()
 }
@@ -74,4 +73,4 @@ function modals(state = modalsState, action) {
     }
 }
 
-export default combineReducers({ stats, filters, form: formReducer, modals });
+export default combineReducers({ stats, filters, modals });
