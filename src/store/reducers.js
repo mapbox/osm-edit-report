@@ -54,4 +54,28 @@ function filters(state = filterState, action) {
     }
 }
 
-export default combineReducers({ stats, filters, form: formReducer});
+const modalsState = {
+    showErrorModal: false,
+    errorMessage: null,
+};
+
+function modals(state = modalsState, action) {
+    switch(action.type) {
+        case 'OPEN_ERROR_MODAL': {
+            return {
+                showErrorModal: true,
+                errorMessage: action.error,
+            };
+        }
+        case 'CLOSE_ERROR_MODAL': {
+            return {
+                showErrorModal: false,
+                errorMessage: null,
+            };
+        }
+        default:
+            return state;
+    }
+}
+
+export default combineReducers({ stats, filters, form: formReducer, modals });

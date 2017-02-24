@@ -27,6 +27,19 @@ export function setFilter(filter) {
     };
 }
 
+export function openErrorModal(error) {
+    return {
+        type: 'OPEN_ERROR_MODAL',
+        error,
+    };
+}
+
+export function closeErrorModal(error) {
+    return {
+        type: 'CLOSE_ERROR_MODAL',
+    };
+}
+
 export function getStats(filters) {
     var params = [];
     if (filters) {
@@ -48,14 +61,16 @@ export function getStats(filters) {
         }
     }
     return dispatch => {
+        dispatch(closeErrorModal());
         dispatch(requestStats())
         return api.get(`/stats?${ params.length > 0 ? params.join('&') : '' }`)
             .then(d => {
                 if (d.problem) {
+                    dispatch(openErrorModal(d.problem));
                     return dispatch(networkError(d.problem));
                 }
                 dispatch(receiveStats(d))
             });
-            
+
     };
 }

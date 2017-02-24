@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import React, {Component} from 'react';
-import {getStats} from './store/stats.actions';
+import {getStats, closeErrorModal} from './store/stats.actions';
 import Header from './components/Header';
 import Body from './components/Body';
 import Section from './components/Section';
@@ -18,10 +18,17 @@ class App extends Component {
     }
 
     render() {
-        var d = this.props.stats.data;
+        const { showErrorModal, errorMessage } = this.props.modals;
+        const { closeErrorModal } = this.props.actions;
+
         return (
             <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">
                 <Header />
+                <ErrorModal
+                    showModal={showErrorModal}
+                    message={errorMessage}
+                    onClose={closeErrorModal}
+                />
                 <div className="flex-parent flex-parent--column align-items--center">
                     {d ?  <Section title="This Week Total Objects ">
                         <BarGraph data={d.timeFormatCMD(d.getByTime('day'), 'objects')} /> 
@@ -51,7 +58,7 @@ class App extends Component {
 }
 
 App = connect(state => state, (dispatch) => ({
-    actions: bindActionCreators({getStats}, dispatch)
+    actions: bindActionCreators({getStats, closeErrorModal}, dispatch)
 }))(App);
 
 export default (App);
