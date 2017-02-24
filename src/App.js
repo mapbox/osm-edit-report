@@ -6,6 +6,7 @@ import Header from './components/Header';
 import Body from './components/Body';
 import Section from './components/Section';
 import BarGraph, { BrushGraph } from './components/BarGraph';
+import ErrorModal from './components/ErrorModal';
 
 class App extends Component {
     static propTypes = {
@@ -20,6 +21,7 @@ class App extends Component {
     render() {
         const { showErrorModal, errorMessage } = this.props.modals;
         const { closeErrorModal } = this.props.actions;
+        var d = this.props.stats.data;
 
         return (
             <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">

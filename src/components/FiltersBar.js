@@ -2,6 +2,7 @@ import React from 'react';
 import TagsSelect from './TagsSelect';
 import UsersSelect from './UsersSelect';
 import DateSelect from './DateSelect';
+import MapSelect from './MapSelect';
 
 class FiltersBar extends React.Component {
 
@@ -13,6 +14,8 @@ class FiltersBar extends React.Component {
             return TagsSelect;
         case 'date':
             return DateSelect
+        case 'bbox':
+            return MapSelect;
         default:
             return () => {};
         }

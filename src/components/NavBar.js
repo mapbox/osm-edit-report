@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-export default ({ toggleUsers, toggleTags, toggleDate, selectedFilter, filters }) => (
+export default ({ toggleUsers, toggleTags, toggleDate, toggleBbox, selectedFilter, filters }) => (
     <div className={`border border--gray-light p12 round-t`}>
         <nav>
             <div className="flex-parent flex-parent--row-ml  flex-parent--row-mxl flex-parent--column space-between">
@@ -13,6 +13,7 @@ export default ({ toggleUsers, toggleTags, toggleDate, selectedFilter, filters }
                         <FilterButton filled={filters.users} selectedFilter={selectedFilter} onClick={toggleUsers} >Users</FilterButton>
                         <FilterButton filled={filters.tags} selectedFilter={selectedFilter} onClick={toggleTags} >Tags</FilterButton>
                         <FilterButton filled={filters.dateFrom || filters.dateTo} selectedFilter={selectedFilter} onClick={toggleDate}>Date</FilterButton>
+                        <FilterButton filled={filters.bbox} selectedFilter={selectedFilter} onClick={toggleBbox}>Map</FilterButton>
                     </div>
                     <div className="header-button flex-child">
                        
@@ -25,7 +26,6 @@ export default ({ toggleUsers, toggleTags, toggleDate, selectedFilter, filters }
 
 
 const FilterButton = ({children, onClick, selectedFilter, filled}) => {
-    console.log(filled);
     const type = children && children.toLowerCase();
     const active = selectedFilter === type;
     const mapping = {
