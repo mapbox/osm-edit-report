@@ -19,7 +19,11 @@ function stats(state = {}, action) {
             ...state,
             data: undefined
         }
-    case 'REQUEST_STATS':
+    case 'REQUEST_STATS': 
+        return {
+            ...state,
+            data: undefined
+        }
     default:
         return state;
     }

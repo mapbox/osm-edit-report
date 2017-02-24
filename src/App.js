@@ -5,16 +5,8 @@ import {getStats} from './store/stats.actions';
 import Header from './components/Header';
 import Body from './components/Body';
 import Section from './components/Section';
-import {BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend} from 'recharts';
-const data = [
-    { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
-    { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
-    { name: 'Page C', uv: 2000, pv: 9800, amt: 2290 },
-    { name: 'Page D', uv: 2780, pv: 3908, amt: 2000 },
-    { name: 'Page E', uv: 1890, pv: 4800, amt: 2181 },
-    { name: 'Page F', uv: 2390, pv: 3800, amt: 2500 },
-    { name: 'Page G', uv: 3490, pv: 4300, amt: 2100 },
-];
+import BarGraph, { BrushGraph } from './components/BarGraph';
+
 class App extends Component {
     static propTypes = {
         actions: React.PropTypes.object
@@ -26,22 +18,32 @@ class App extends Component {
     }
 
     render() {
+        var d = this.props.stats.data;
         return (
             <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">
                 <Header />
                 <div className="flex-parent flex-parent--column align-items--center">
-                    <Section title="Last week">
-                        <BarChart width={600} height={300} data={data}
-                            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <Tooltip />
-                            <Legend />
-                            <Bar dataKey="pv" stackId="a" fill="#8884d8" />
-                            <Bar dataKey="uv" stackId="a" fill="#82ca9d" />
-                        </BarChart>
-                    </Section>
+                    {d ?  <Section title="This Week Total Objects ">
+                        <BarGraph data={d.timeFormatCMD(d.getByTime('day'), 'objects')} /> 
+                    </Section> : null}
+                    {d ? <Section title="All nodes ">
+                        <BarGraph data={d.timeFormatCMD(d.getByTime('day'), 'nodes')} /> 
+                    </Section> : null}
+                    {d ? <Section title="All ways ">
+                       <BarGraph data={d.timeFormatCMD(d.getByTime('day'), 'ways')} /> 
+                    </Section> : null}
+                    {d ? <Section title="All relations ">
+                        <BarGraph data={d.timeFormatCMD(d.getByTime('day'), 'relations')} />
+                    </Section> : null}
+                    {d ? <Section title="All tags ">
+                        <BarGraph data={d.timeFormatTags(d.getByTime('day'))} />
+                    </Section> : null}
+                    {d ? <Section title="All Object by users ">
+                        <BrushGraph data={d.userFormatAllObj(d.getAllUsers(), 'objects')} />
+                    </Section> : null}
+                    {d ? <Section title="All tags by users ">
+                        <BrushGraph data={d.userFormatAllTag(d.getAllUsers())} />
+                    </Section> : null}
                 </div>
             </div>
         );
