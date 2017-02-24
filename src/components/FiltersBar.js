@@ -23,7 +23,7 @@ class FiltersBar extends React.Component {
     render() {
         const CurComp = this.getComp();
         return (
-            <div className="col col--offl8 col--4 border border--gray-light p12 round-b border-t--0">
+            <div className="filters-bar col col--offl8 col--4 border border--gray-light p12 round-b border-t--0">
                 <nav>
                     <CurComp 
                         filterValues={this.props.filterValues}

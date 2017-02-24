@@ -54,6 +54,7 @@ class Header extends React.Component {
     }
 
     onChange = (filters) => {
+        console.log(filters);
         this.props.setFilters(filters);
         this.props.getStats(filters);
     }
