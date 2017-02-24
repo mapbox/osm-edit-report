@@ -1,5 +1,6 @@
 import api from './api';
 import moment from 'moment';
+
 function requestStats() {
     return {
         type: 'REQUEST_STATS'

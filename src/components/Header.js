@@ -3,8 +3,7 @@ import FiltersBar from './FiltersBar';
 import NavBar from './NavBar';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { setFilters } from '../store/filters.action';
-import { getStats } from '../store/stats.actions';
+import { getStats, setFilter } from '../store/actions';
 
 class Header extends React.Component {
     static propTypes = {
@@ -54,14 +53,14 @@ class Header extends React.Component {
     }
 
     onChange = (filters) => {
-        this.props.setFilters(filters);
+        this.props.setFilter(filters);
         this.props.getStats(filters);
     }
 
     render() {
         return (
             <div className="">
-                <NavBar 
+                <NavBar
                     toggleDate={this.toggleDate}
                     toggleUsers={this.toggleUsers}
                     toggleTags={this.toggleTags}
@@ -77,7 +76,6 @@ class Header extends React.Component {
                             onChange={this.onChange}
                         /> : null
                     }
-                    
                 </div>
             </div>
         );
@@ -85,7 +83,7 @@ class Header extends React.Component {
 }
 
 Header = connect(state => state, (dispatch) => ({
-    ...bindActionCreators({ getStats, setFilters }, dispatch)
+    ...bindActionCreators({ getStats, setFilter }, dispatch)
 }))(Header);
 
 export default  Header;
