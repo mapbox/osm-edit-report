@@ -8,5 +8,8 @@
             4
         ],
         "no-console": ["warn"]
+    },
+    "globals": {
+        "mapboxgl": true
     }
 }

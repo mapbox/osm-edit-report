@@ -19,7 +19,11 @@ function stats(state = {}, action) {
             ...state,
             data: undefined
         }
-    case 'REQUEST_STATS':
+    case 'REQUEST_STATS': 
+        return {
+            ...state,
+            data: undefined
+        }
     default:
         return state;
     }
@@ -29,7 +33,8 @@ const filterState = {
     users: getUrlParam('users') || undefined,
     tags: getUrlParam('tags') || undefined,
     dateFrom: getUrlParam('dateFrom') && moment(getUrlParam('dateFrom')),
-    dateTo: getUrlParam('dateTo') && moment(getUrlParam('dateTo'))
+    dateTo: getUrlParam('dateTo') && moment(getUrlParam('dateTo')),
+    bbox: getUrlParam('bbox') || undefined,
 }
 
 if (!filterState.dateFrom) { 
@@ -57,20 +62,20 @@ const modalsState = {
 
 function modals(state = modalsState, action) {
     switch(action.type) {
-        case 'OPEN_ERROR_MODAL': {
-            return {
-                showErrorModal: true,
-                errorMessage: action.error,
-            };
-        }
-        case 'CLOSE_ERROR_MODAL': {
-            return {
-                showErrorModal: false,
-                errorMessage: null,
-            };
-        }
-        default:
-            return state;
+    case 'OPEN_ERROR_MODAL': {
+        return {
+            showErrorModal: true,
+            errorMessage: action.error,
+        };
+    }
+    case 'CLOSE_ERROR_MODAL': {
+        return {
+            showErrorModal: false,
+            errorMessage: null,
+        };
+    }
+    default:
+        return state;
     }
 }
 

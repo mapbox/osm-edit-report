@@ -31,17 +31,26 @@ class Header extends React.Component {
         }
         this.setState({ selectedFilter: 'tags'});
     }
+
     toggleUsers = () => {
         if (this.state.selectedFilter === 'users') {
             return this.setState({ selectedFilter: null });
         }
         this.setState({ selectedFilter: 'users' });
     }
+
     toggleDate = () => {
         if (this.state.selectedFilter === 'date') {
             return this.setState({ selectedFilter: null });
         }
         this.setState({ selectedFilter: 'date' });
+    }
+
+    toggleBbox = () => {
+        if (this.state.selectedFilter === 'bbox') {
+            return this.setState({ selectedFilter: null });
+        }
+        this.setState({ selectedFilter: 'bbox' });
     }
 
     onChange = (filters) => {
@@ -56,6 +65,7 @@ class Header extends React.Component {
                     toggleDate={this.toggleDate}
                     toggleUsers={this.toggleUsers}
                     toggleTags={this.toggleTags}
+                    toggleBbox={this.toggleBbox}
                     selectedFilter={this.state.selectedFilter}
                     filters={this.props.filters}
                     />
@@ -66,7 +76,7 @@ class Header extends React.Component {
                             filterValues={this.props.filters}
                             onChange={this.onChange}
                         /> : null
-            }
+                    }
                     
                 </div>
             </div>
