@@ -11,3 +11,18 @@
 .btn-border--1 {
     border-width: 1px;
 }
+.map-clear {
+    position: relative;
+    top: 28px;
+    right: 1px;
+}
+
+.map-select {
+    position: relative;
+    top: -5px;
+
+}
+
+.pointer {
+    cursor: pointer;
+}

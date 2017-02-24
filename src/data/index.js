@@ -106,5 +106,55 @@ export default class Data {
     getByTime(t) {
         return this._byTime[t];
     }
+    // graph specific getters
+    objectType(key, data) {
+        
+    }
+
+    timeFormatCMD(data, key) {
+        return R.keys(data).map((d) => {
+            return {
+                name: moment(d).format('DD MMM'),
+                c: data[d][key].c,
+                m: data[d][key].m,
+                d: data[d][key].d
+            }
+        }).sort((a, b) => a.name.localeCompare(b.name));
+    
+    }
+
+    timeFormatTags(data) {
+        return R.keys(data).map((d) => {
+            return {
+                name: moment(d).format('DD MMM'),
+                c: data[d].tagsChanged,
+                m: data[d].tagsModified,
+                d: data[d].tagsDeleted
+            }
+        }).sort((a, b) => a.name.localeCompare(b.name));
+    }
+    userFormatAllObj(data, key) {
+        return R.keys(data).map((d) => {
+            return {
+                name: d,
+                c: data[d][key].c,
+                m: data[d][key].m,
+                d: data[d][key].d
+            }
+        }).sort((a, b) => a.c + a.m + a.d - b.c - b.m - b.d)
+        .filter(a => a.c + a.m + a.d > 3);
+    }
+
+    userFormatAllTag(data) {
+        return R.keys(data).map((d) => {
+            return {
+                name: d,
+                c: data[d].tagsChanged,
+                m: data[d].tagsModified,
+                d: data[d].tagsDeleted
+            }
+        }).sort((a, b) => a.c + a.m + a.d - b.c - b.m - b.d)
+            .filter(a => a.c + a.m + a.d > 3);
+    }
 }
 
