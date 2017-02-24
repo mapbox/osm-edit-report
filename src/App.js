@@ -1,7 +1,7 @@
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import React, {Component} from 'react';
-import {getStats, closeErrorModal} from './store/stats.actions';
+import {getStats, closeErrorModal} from './store/actions';
 import Header from './components/Header';
 import Body from './components/Body';
 import Section from './components/Section';
