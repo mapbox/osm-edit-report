@@ -17,7 +17,7 @@ function stats(state = {}, action) {
             ...state,
             data: undefined
         }
-    case 'REQUEST_STATS': 
+    case 'REQUEST_STATS':
         return {
             ...state,
             data: undefined
@@ -43,10 +43,10 @@ if (!filterState.dateFrom) {
 
 function filters(state = filterState, action) {
     switch (action.type) {
-    case 'SET_FILTERS': {
-        setUrlParams(action.filters);
+    case 'SET_FILTER': {
+        setUrlParams(action.filter);
         return {
-            ...action.filters
+            ...action.filter
         };
     }
     default:
