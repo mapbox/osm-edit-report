@@ -6,6 +6,7 @@ import Header from './components/Header';
 import ErrorModal from './components/ErrorModal';
 import FirstGraph from './components/FirstGraph';
 import TagsGraph from './components/TagsGraph';
+import Table from './components/Table';
 
 class App extends Component {
     static propTypes = {

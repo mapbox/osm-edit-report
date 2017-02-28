@@ -36,21 +36,19 @@ export default class FirstGraph extends React.Component {
     render() {
         const d = this.props.data;
         if (!d) return null;
-        const time = this.state.time;
         const isHour = this.state.time === 'hour';
         const isDay = this.state.time === 'day';
         const isTags = this.state.type === 'tags';
         const isObjects = this.state.type === 'objects';
         const isChangesets = this.state.type === 'changesets';
 
-        const changesets = this.state.type === 'changesets';
         let byTime = d.getByTime(this.state.time);
         let format = d.timeFormatEdits(byTime, this.state.type, 'DD MMM');
         let sum = format.reduce((prev, cur) => prev + cur.c + cur.d + cur.m, 0);
         if (isHour) {
-            format = R.takeLast(24, d.timeFormatEdits(byTime, this.state.type, 'DD h:mm a'));
+            format = R.takeLast(24, d.timeFormatEdits(byTime, this.state.type, 'MM/DD HH:00'));
         }
-        if (changesets) {
+        if (isChangesets) {
             sum = format.reduce((prev, cur) => prev + cur.c, 0);
         }
         const buttons = (
@@ -83,8 +81,8 @@ export default class FirstGraph extends React.Component {
                         <Tooltip />
                         <Legend />
                         <Bar dataKey="c" stackId="a" fill="#607d9c" />
-                        {!changesets ? <Bar dataKey="m" stackId="a" fill="#273d56" /> : null }
-                        { !changesets ? <Bar dataKey="d" stackId="a" fill="#269561" /> : null }
+                        {!isChangesets ? <Bar dataKey="m" stackId="a" fill="#273d56" /> : null }
+                        {!isChangesets ? <Bar dataKey="d" stackId="a" fill="#269561" /> : null }
                     </BarChart>
                 </ResponsiveContainer>
             </Section >

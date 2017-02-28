@@ -1,7 +1,11 @@
 import React from 'react';
+import {abbreviateNumber} from '../helper';
 import FixedDataTable, {Table, Column, Cell } from 'fixed-data-table';
+import Section from './Section';
+import R from 'ramda';
 
 var SortTypes = {
+
     ASC: 'ASC',
     DESC: 'DESC',
 };
@@ -59,27 +63,21 @@ class DataListWrapper {
     }
 
     getObjectAt(index) {
-        return this._data.getObjectAt(
-            this._indexMap[index],
-        );
+        return this._data[
+            this._indexMap[index]
+        ];
     }
 }
 
 
-export default class MyTable extends React.Component {
+class MyTable extends React.Component {
     constructor(props) {
         super(props);
 
-        this._dataList = this.props.data;
-
-        this._defaultSortIndexes = [];
-        var size = this._dataList.getSize();
-        for (var index = 0; index < size; index++) {
-            this._defaultSortIndexes.push(index);
-        }
-
+        debugger;
+        this._dataList = this.props.data.getAllUsers();
         this.state = {
-            sortedDataList: this._dataList,
+            sortedDataList: new DataListWrapper(R.range(0, this._dataList.length), this._dataList),
             colSortDirs: {},
         };
 
@@ -99,7 +97,7 @@ export default class MyTable extends React.Component {
                 sortVal = -1;
             }
             if (sortVal !== 0 && sortDir === SortTypes.ASC) {
-                sortVal = sortVal * -1;
+                sortVal *= -1;
             }
 
             return sortVal;
@@ -130,43 +128,31 @@ export default class MyTable extends React.Component {
                             onSortChange={this._onSortChange}
                             sortDir={colSortDirs.id}>
                             id
-            </SortHeaderCell>
+                    </SortHeaderCell>
                     }
                     cell={<TextCell data={sortedDataList} />}
                     width={100}
                 />
                 <Column
-                    columnKey="firstName"
+                    columnKey="username"
                     header={
                         <SortHeaderCell
                             onSortChange={this._onSortChange}
-                            sortDir={colSortDirs.firstName}>
-                            First Name
-            </SortHeaderCell>
+                            sortDir={colSortDirs.username}>
+                            Username
+                        </SortHeaderCell>
                     }
                     cell={<TextCell data={sortedDataList} />}
                     width={200}
                 />
                 <Column
-                    columnKey="lastName"
+                    columnKey="changesets"
                     header={
                         <SortHeaderCell
                             onSortChange={this._onSortChange}
-                            sortDir={colSortDirs.lastName}>
-                            Last Name
-            </SortHeaderCell>
-                    }
-                    cell={<TextCell data={sortedDataList} />}
-                    width={200}
-                />
-                <Column
-                    columnKey="city"
-                    header={
-                        <SortHeaderCell
-                            onSortChange={this._onSortChange}
-                            sortDir={colSortDirs.city}>
-                            City
-            </SortHeaderCell>
+                            sortDir={colSortDirs.changesets}>
+                            Changesets
+                        </SortHeaderCell>
                     }
                     cell={<TextCell data={sortedDataList} />}
                     width={200}
@@ -186,4 +172,17 @@ export default class MyTable extends React.Component {
             </Table>
         );
     }
+}
+
+export default function UserTable({ data }) {
+    if (!data) return null;
+    return (
+        <Section title="Users"
+            titleRightBottom=""
+            titleBottom={`Total: ${abbreviateNumber(200)}`}
+            titleRight="&nbsp;"
+        >
+            <MyTable data={data} />
+        </Section>
+    )
 }

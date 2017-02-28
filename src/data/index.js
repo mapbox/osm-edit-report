@@ -104,6 +104,8 @@ export default class Data {
         this._data = data;
         this._edits  = getEdits(data);
         this._byUser = getEditsByUser(data);
+        this._dataTeam = dataTeam.getEverything();
+        // this._dataTeam = R.zipObj(R.pluck('username', this._dataTeam), this._dataTeam);
         this._byTime = {
             hour: getEditsByTime('hour')(data),
             day: getEditsByTime('day')(data),
@@ -112,12 +114,14 @@ export default class Data {
         }
         window.data = this;
     }
-    getAllUsers() {
-        return Object.keys(this._byUser).map(k => {
-            this._byUser[k].name = k;
-            return this._byUser[k];
-        });
-    }
+    // getAllUsers() {
+    //     return Object.keys(this._byUser).map((k, i) => ({
+    //         ...this._byUser[k],
+    //         name: k,
+    //         userDetails: this._dataTeam[k],
+    //         id: i
+    //     }));
+    // }
     getRawData() {
         return this._data;
     }
@@ -153,9 +157,9 @@ export default class Data {
         let format;
         if (key === 'changesets') {
             format = R.keys(data).map((d) => ({
-                        name: moment(d).format(dateFormat),
-                        c: data[d].changesets,
-                        time: moment(d)
+                name: moment(d).format(dateFormat),
+                c: data[d].changesets,
+                time: moment(d)
             }));
         } else if (key === 'tags') {
             format = R.keys(data).map((d) => ({
