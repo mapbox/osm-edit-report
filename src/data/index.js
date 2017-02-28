@@ -30,7 +30,6 @@ const getEditsByUser = (data) => R.zipObj(
         usernames, 
         R.juxt(usernames.map(getEditsByName))(data)
     );
-const addSameObjs = R.reduce(R.mergeWith(R.add), {});
 
 window.R = R;
 // getEditsByTime :: Data -> {time:[{edits}]}
@@ -45,14 +44,15 @@ function sumEditObjs(editArray) {
     var infoKeys = ['nodes', 'ways', 'relations', 'tags_created', 'tags_modified', 'tags_deleted', 'changesets'];
     const pluck = R.map(R.pluck, infoKeys);
     // adds an array of similar object [{obj}] -> {obj}
+    const addSameObjs = R.curry((base, data) => R.reduce(R.mergeWith(R.add), base)(data));
  
     
     let zip = R.zipObj(infoKeys, R.juxt(pluck)(editArray))
     // zip = nodes: {c,m,d}, ways: {c,m,d}, rel: {c,m,d}
-    const nodes = addSameObjs(zip.nodes);
-    const ways = addSameObjs(zip.ways);
-    const relations = addSameObjs(zip.relations);
-    const objects = addSameObjs([nodes, ways, relations]);
+    const nodes = addSameObjs({c:0, m:0, d:0}, zip.nodes);
+    const ways = addSameObjs({ c: 0, m: 0, d: 0 }, zip.ways);
+    const relations = addSameObjs({ c: 0, m: 0, d: 0 }, zip.relations);
+    const objects = addSameObjs({ c: 0, m: 0, d: 0 }, [nodes, ways, relations]);
 
 
     /**
@@ -76,25 +76,29 @@ function sumEditObjs(editArray) {
     const zipTags = (obj) => R.zipObj(R.keys(obj), sumTags(obj));
 
     // sums up all the edit objects into one fat object
-    const sumAllTags = R.compose(addSameObjs, R.map(zipTags));
+    const sumAllTags = R.compose(addSameObjs({}), R.map(zipTags));
 
     // sums up across tags_modified, tags_created...
-    const sumAllTagTypes = (z) => addSameObjs([
+    const sumAllTagTypes = (z) => addSameObjs({}, [
         sumAllTags(z.tags_modified),
         sumAllTags(z.tags_created),
         sumAllTags(z.tags_deleted)
     ]);
 
     const sortTopTags = R.compose(R.sort((a, b) => b[1] - a[1]), R.toPairs, sumAllTagTypes);
+
+    const tagsModified = getTags(zip.tags_modified);
+    const tagsDeleted = getTags(zip.tags_deleted);
+    const tagsChanged = getTags(zip.tags_created);
     return {
         nodes,
         ways,
         relations,
         objects,
         changesets: R.flatten(zip.changesets).length,
-        tagsModified: getTags(zip.tags_modified),
-        tagsChanged: getTags(zip.tags_created),
-        tagsDeleted: getTags(zip.tags_deleted),
+        tagsModified,
+        tagsChanged,
+        tagsDeleted,
         topTags: sortTopTags(zip)
     };
 }
@@ -105,23 +109,26 @@ export default class Data {
         this._edits  = getEdits(data);
         this._byUser = getEditsByUser(data);
         this._dataTeam = dataTeam.getEverything();
-        // this._dataTeam = R.zipObj(R.pluck('username', this._dataTeam), this._dataTeam);
+        this._usernames = 
+        this._dataTeam = R.zipObj(R.pluck('username', this._dataTeam), this._dataTeam);
+
         this._byTime = {
             hour: getEditsByTime('hour')(data),
             day: getEditsByTime('day')(data),
             week: getEditsByTime('week')(data),
             month: getEditsByTime('month')(data),
         }
+        getEditsByName('randomshit');
         window.data = this;
     }
-    // getAllUsers() {
-    //     return Object.keys(this._byUser).map((k, i) => ({
-    //         ...this._byUser[k],
-    //         name: k,
-    //         userDetails: this._dataTeam[k],
-    //         id: i
-    //     }));
-    // }
+    getAllUsers() {
+        return Object.keys(this._byUser).map((k, i) => ({
+            ...this._byUser[k],
+            username: k,
+            userDetails: this._dataTeam[k],
+            id: i
+        }));
+    }
     getRawData() {
         return this._data;
     }

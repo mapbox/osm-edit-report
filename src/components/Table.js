@@ -3,13 +3,17 @@ import {abbreviateNumber} from '../helper';
 import FixedDataTable, {Table, Column, Cell } from 'fixed-data-table';
 import Section from './Section';
 import R from 'ramda';
+import 'fixed-data-table/dist/fixed-data-table.css';
+import Dimensions from 'react-dimensions';
 
 var SortTypes = {
 
     ASC: 'ASC',
     DESC: 'DESC',
 };
-
+function isObject(val) {
+    return (typeof val === 'object');
+}
 function reverseSortDirection(sortDir) {
     return sortDir === SortTypes.DESC ? SortTypes.ASC : SortTypes.DESC;
 }
@@ -46,11 +50,18 @@ class SortHeaderCell extends React.Component {
     }
 }
 
-const TextCell = ({rowIndex, data, columnKey, ...props}) => (
-    <Cell {...props}>
-        {data.getObjectAt(rowIndex)[columnKey]}
-    </Cell>
-);
+const TextCell = ({rowIndex, data, columnKey, ...props}) => {
+    let cell = data.getObjectAt(rowIndex)[columnKey];
+    if (isObject(cell)) {
+        cell = cell.c + cell.m + cell.d;
+    }
+    return (
+        <Cell {...props}>
+            {cell}
+        </Cell>
+    );
+};
+   
 
 class DataListWrapper {
     constructor(indexMap, data) {
@@ -118,14 +129,13 @@ class MyTable extends React.Component {
                 rowHeight={50}
                 rowsCount={sortedDataList.getSize()}
                 headerHeight={50}
-                width={1000}
+                width={this.props.containerWidth}
                 height={500}
                 {...this.props}>
                 <Column
                     columnKey="id"
                     header={
                         <SortHeaderCell
-                            onSortChange={this._onSortChange}
                             sortDir={colSortDirs.id}>
                             id
                     </SortHeaderCell>
@@ -137,7 +147,6 @@ class MyTable extends React.Component {
                     columnKey="username"
                     header={
                         <SortHeaderCell
-                            onSortChange={this._onSortChange}
                             sortDir={colSortDirs.username}>
                             Username
                         </SortHeaderCell>
@@ -149,7 +158,6 @@ class MyTable extends React.Component {
                     columnKey="changesets"
                     header={
                         <SortHeaderCell
-                            onSortChange={this._onSortChange}
                             sortDir={colSortDirs.changesets}>
                             Changesets
                         </SortHeaderCell>
@@ -158,21 +166,34 @@ class MyTable extends React.Component {
                     width={200}
                 />
                 <Column
-                    columnKey="companyName"
+                    columnKey="objects"
                     header={
                         <SortHeaderCell
-                            onSortChange={this._onSortChange}
-                            sortDir={colSortDirs.companyName}>
-                            Company Name
-            </SortHeaderCell>
+                            sortDir={colSortDirs.objects}>
+                            Objects
+                        </SortHeaderCell>
                     }
                     cell={<TextCell data={sortedDataList} />}
                     width={200}
                 />
+                <Column
+                    columnKey="objects"
+                    header={
+                        <SortHeaderCell
+                            sortDir={colSortDirs.objects}>
+                            Objects
+                        </SortHeaderCell>
+                    }
+                    cell={<TextCell data={sortedDataList} />}
+                    width={200}
+                />
+
+      
             </Table>
         );
     }
 }
+MyTable = Dimensions()(MyTable);
 
 export default function UserTable({ data }) {
     if (!data) return null;

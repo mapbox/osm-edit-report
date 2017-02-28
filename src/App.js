@@ -33,6 +33,8 @@ class App extends Component {
                 <div className="flex-parent flex-parent--column align-items--center">
                     <FirstGraph data={d} />
                     <TagsGraph data={d} />
+                    <Table data={d} />
+                    
                 </div>
             </div>
         );
