@@ -30,7 +30,6 @@ export default ({ toggleUsers, toggleTags, toggleDate, toggleBbox, selectedFilte
 export const MyButton = ({children, onClick, selectedFilter, filled}) => {
     const type = children && children.toLowerCase();
     const active = selectedFilter === type;
-
     let color = !active ? 'bg-gray-faint-on-hover' : 'bg-gray-faint unround-b-mm';
     if (filled) {
         color = 'bg-gray-faint';
@@ -38,10 +37,9 @@ export const MyButton = ({children, onClick, selectedFilter, filled}) => {
     return (
         <span>
             <a onClick={onClick} data-for={type} className={`cursor-pointer txt-s txt-capitalize-first color-gray inline-block txt-bold transition round mb6 mb0-mm px12 py6 mr6 ${color}`}>
-            {children}
+                {children}
             </a>
         </span>
     );
 }
-//bg-orange-faint mx3 color-orange-dark inline-block px6 py3 txt-xs txt-bold round-full
 
