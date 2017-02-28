@@ -59,7 +59,7 @@ class Header extends React.Component {
 
     render() {
         return (
-            <div className="">
+            <div className="border-b border--gray-light">
                 <NavBar
                     toggleDate={this.toggleDate}
                     toggleUsers={this.toggleUsers}

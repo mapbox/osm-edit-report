@@ -50,3 +50,21 @@ export function setUrlParam(keyArg, valueArg) {
     window.history.pushState({ path: newurl }, '', `?${newurl}`);
     window.location.hash = hash;
 }
+
+export function abbreviateNumber(value) {
+    var newValue = value;
+    if (value >= 1000) {
+        var suffixes = ["", "K", "M", "B", "t"];
+        var suffixNum = Math.floor(("" + value).length / 3);
+        var shortValue = '';
+        for (var precision = 4; precision >= 2; precision--) {
+            shortValue = parseFloat((suffixNum != 0 ? (value / Math.pow(1000, suffixNum)) : value).toPrecision(precision));
+            var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
+            if (dotLessShortValue.length <= 2) { break; }
+        }
+        console.log(shortValue)
+        if (shortValue % 1 != 0) shortValue.toFixed(2);
+        newValue = shortValue + suffixes[suffixNum];
+    }
+    return newValue;
+}

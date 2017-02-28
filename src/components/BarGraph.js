@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, Brush } from 'recharts';
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceLine, Brush } from 'recharts';
 const data = [
     { name: 'Page A', uv: 4000, pv: 2400, amt: 2400 },
     { name: 'Page B', uv: 3000, pv: 1398, amt: 2210 },
@@ -13,17 +13,22 @@ const data = [
 export default class BarGraph extends React.Component {
     render() {
         return (
-            <BarChart width={600} height={300} data={this.props.data}
-                margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <XAxis dataKey="name" />
-                <YAxis />
-                <CartesianGrid strokeDasharray="3 3" />
-                <Tooltip />
-                <Legend />
-                <Bar dataKey="c" stackId="a" fill="#8884d8" />
-                <Bar dataKey="m" stackId="a" fill="#82ca9d" />
-                <Bar dataKey="d" stackId="a" fill="#cbf2f1" />
-            </BarChart>
+            <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={this.props.data}
+                    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                    >
+                    layout={this.props.layout}
+                    
+                    <XAxis dataKey="name" />
+                    <YAxis />
+                    <CartesianGrid strokeDasharray="3 3" />
+                    <Tooltip />
+                    <Legend />
+                    <Bar dataKey={this.props.dataKey[0]} stackId="a" fill="#8884d8" />
+                    <Bar dataKey={this.props.dataKey[1]} stackId="a" fill="#82ca9d" />
+                    <Bar dataKey={this.props.dataKey[2]} stackId="a" fill="#cbf2f1" />
+                </BarChart>
+            </ResponsiveContainer>
         )
     }
 }

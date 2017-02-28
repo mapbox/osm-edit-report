@@ -23,14 +23,16 @@ const getEditsByName = (name) => R.compose(sumEditObjs, R.filter(R.identity), R.
 
 // type Data = {time:{user:{edit},...}
 // getEdits :: Data -> [{edits}]
-const getEdits = R.pipe(R.values, R.map(R.values), R.flatten);
+const getEdits = R.pipe(R.values, R.map(R.values), R.flatten, sumEditObjs);
 
 // getEditsByUser :: Data -> {user:[{edits}]}
 const getEditsByUser = (data) => R.zipObj(
         usernames, 
         R.juxt(usernames.map(getEditsByName))(data)
     );
+const addSameObjs = R.reduce(R.mergeWith(R.add), {});
 
+window.R = R;
 // getEditsByTime :: Data -> {time:[{edits}]}
 const getEditsByTime = (unit) =>
     R.pipe(R.toPairs,
@@ -43,7 +45,6 @@ function sumEditObjs(editArray) {
     var infoKeys = ['nodes', 'ways', 'relations', 'tags_created', 'tags_modified', 'tags_deleted', 'changesets'];
     const pluck = R.map(R.pluck, infoKeys);
     // adds an array of similar object [{obj}] -> {obj}
-    const addSameObjs = R.reduce(R.mergeWith(R.add), {});
  
     
     let zip = R.zipObj(infoKeys, R.juxt(pluck)(editArray))
@@ -67,6 +68,24 @@ function sumEditObjs(editArray) {
 
     const get2ndLevelTags = R.compose(R.sum, R.flatten, R.map(R.values), R.values);
     const getTags = R.compose(R.sum, R.map(get2ndLevelTags));
+
+    // sums all the tags and returns an array of summations
+    const sumTags = R.compose(R.map(R.sum), R.map(R.values), R.values);
+
+    // returns a key value pair of key and sum of all the values eg. {building: 45, lanes: 10}
+    const zipTags = (obj) => R.zipObj(R.keys(obj), sumTags(obj));
+
+    // sums up all the edit objects into one fat object
+    const sumAllTags = R.compose(addSameObjs, R.map(zipTags));
+
+    // sums up across tags_modified, tags_created...
+    const sumAllTagTypes = (z) => addSameObjs([
+        sumAllTags(z.tags_modified),
+        sumAllTags(z.tags_created),
+        sumAllTags(z.tags_deleted)
+    ]);
+
+    const sortTopTags = R.compose(R.sort((a, b) => b[1] - a[1]), R.toPairs, sumAllTagTypes);
     return {
         nodes,
         ways,
@@ -75,7 +94,8 @@ function sumEditObjs(editArray) {
         changesets: R.flatten(zip.changesets).length,
         tagsModified: getTags(zip.tags_modified),
         tagsChanged: getTags(zip.tags_created),
-        tagsDeleted: getTags(zip.tags_deleted)
+        tagsDeleted: getTags(zip.tags_deleted),
+        topTags: sortTopTags(zip)
     };
 }
 
@@ -85,6 +105,7 @@ export default class Data {
         this._edits  = getEdits(data);
         this._byUser = getEditsByUser(data);
         this._byTime = {
+            hour: getEditsByTime('hour')(data),
             day: getEditsByTime('day')(data),
             week: getEditsByTime('week')(data),
             month: getEditsByTime('month')(data),
@@ -92,7 +113,10 @@ export default class Data {
         window.data = this;
     }
     getAllUsers() {
-        return this._byUser;
+        return Object.keys(this._byUser).map(k => {
+            this._byUser[k].name = k;
+            return this._byUser[k];
+        });
     }
     getRawData() {
         return this._data;
@@ -106,20 +130,51 @@ export default class Data {
     getByTime(t) {
         return this._byTime[t];
     }
-    // graph specific getters
-    objectType(key, data) {
-        
+    getEdits() {
+        return this._edits;
     }
 
-    timeFormatCMD(data, key) {
+    // graph specific getters
+    topTagsFormat = (data) => data.topTags.map(t => ({
+        name: t[0],
+        count: t[1]
+    }))
+
+    timeFormatChangesets(data, dateFormat) {
         return R.keys(data).map((d) => {
             return {
-                name: moment(d).format('DD MMM'),
+                name: moment(d).format(dateFormat),
+                changesets: data.changesets.length,
+                time: moment(d)
+            }
+        }).sort((a, b) => a.time.diff(b.time));
+    }
+    timeFormatEdits(data, key, dateFormat) {
+        let format;
+        if (key === 'changesets') {
+            format = R.keys(data).map((d) => ({
+                        name: moment(d).format(dateFormat),
+                        c: data[d].changesets,
+                        time: moment(d)
+            }));
+        } else if (key === 'tags') {
+            format = R.keys(data).map((d) => ({
+                name: moment(d).format(dateFormat),
+                c: data[d].tagsChanged,
+                m: data[d].tagsModified,
+                d: data[d].tagsDeleted,
+                time: moment(d)
+            }));
+        } else {
+            format = R.keys(data).map((d) => ({
+                name: moment(d).format(dateFormat),
                 c: data[d][key].c,
                 m: data[d][key].m,
-                d: data[d][key].d
-            }
-        }).sort((a, b) => a.name.localeCompare(b.name));
+                d: data[d][key].d,
+                time: moment(d)
+            }));
+        }
+        return format.sort((a, b) => a.time.diff(b.time));
     
     }
 
@@ -133,6 +188,7 @@ export default class Data {
             }
         }).sort((a, b) => a.name.localeCompare(b.name));
     }
+
     userFormatAllObj(data, key) {
         return R.keys(data).map((d) => {
             return {
