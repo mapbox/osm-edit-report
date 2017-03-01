@@ -301,12 +301,21 @@ export default class UserTable extends React.Component {
         flat = flat.filter((a) => a !== 0 && !Number.isNaN(parseInt(a, 10)));
         return this.mapper(R.apply(Math.min, flat), R.apply(Math.max, flat));
     }
+    findAvg(byUsers) {
+        let flat = this.flatten(this.state.type, byUsers);
+        if (this.state.type === 'objects') {
+            flat = flat.map((o) => o.c + o.m + o.d);
+        }
+        flat = flat.filter((a) => a !== 0 && !Number.isNaN(parseInt(a, 10)));
+        if (flat.length === 0) return 0;
+        let avg = parseInt(R.sum(flat)/flat.length, 10);
+        return abbreviateNumber(avg);
+    }
     mapper(min, max) {
         const color = {
             h:213, s:27, l:60
         };
         let m = 0;
-        console.log(max);
         if (max !== 0) {
             m = (color.l - 100)/Math.sqrt(max);
         }
@@ -346,10 +355,10 @@ export default class UserTable extends React.Component {
         return (
             <Section title="Users"
                 titleRightBottom={buttons}
-                titleBottom={`Total: ${abbreviateNumber(100)}`}
+                titleBottom={`Avg: ${this.findAvg(byUsers)}`}
                 titleRight="&nbsp;"
             >
-                <div className="mx18">
+                <div className="mx18 mt18">
                     <MyTable range={range} data={byUsers} timeKeys={timeKeys} timeFormat={timeFormat} dataType={this.state.type}/>
                 </div>
             </Section>

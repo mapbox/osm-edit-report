@@ -17,7 +17,7 @@ export default class DateSelect extends React.Component {
         const dateTo = this.props.filterValues && this.props.filterValues.dateTo;
         
         return (
-            <div>
+            <div className="flex-parent flex-parent--row space-around">
                 <DatePicker
                     className="input my6 w-full"
                     selectsStart
