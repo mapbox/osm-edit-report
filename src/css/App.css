@@ -26,3 +26,26 @@
 .pointer {
     cursor: pointer;
 }
+
+.avatar {
+    background: #efefef;
+    background-size: 100%;
+    display: inline-block;
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+-moz-border-radius: 50%;
+-webkit-border-radius: 50%;
+
+}
+.fixedDataTableCellLayout_main {
+    border-right-style: none !important;
+}
+.fixedDataTableLayout_main {
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-color: #c6d2e1 !important;
+}
+.public_fixedDataTable_header, .public_fixedDataTable_header .public_fixedDataTableCell_main {
+    background-image: linear-gradient(#fff, #c6d2e1) !important;
+}

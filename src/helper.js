@@ -52,6 +52,7 @@ export function setUrlParam(keyArg, valueArg) {
 }
 
 export function abbreviateNumber(value) {
+    if (!value) return 0;
     var newValue = value;
     if (value >= 1000) {
         var suffixes = ["", "K", "M", "B", "t"];
@@ -62,7 +63,6 @@ export function abbreviateNumber(value) {
             var dotLessShortValue = (shortValue + '').replace(/[^a-zA-Z 0-9]+/g, '');
             if (dotLessShortValue.length <= 2) { break; }
         }
-        console.log(shortValue)
         if (shortValue % 1 != 0) shortValue.toFixed(2);
         newValue = shortValue + suffixes[suffixNum];
     }

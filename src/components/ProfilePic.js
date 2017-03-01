@@ -30,7 +30,7 @@ export default React.createClass({
             { backgroundImage: 'url(' + this.state.src + ')' } :
             undefined;
 
-        return <div className="exampleImage" style={style} />;
+        return <div className="avatar" style={style} />;
     },
 
     _load(/*string*/ src) {

@@ -6,8 +6,8 @@ import Section from './Section';
 export default function TagsGraph({ data }) {
     if (!data) return null;
     const byEdits = data.getEdits();
-    const {tagsChanged, tagsModified, tagsDeleted} = byEdits;
-    const tagsSum = tagsChanged + tagsModified + tagsDeleted
+    const {tagsCreated, tagsModified, tagsDeleted} = byEdits;
+    const tagsSum = tagsCreated + tagsModified + tagsDeleted
     const format = data.topTagsFormat(byEdits).slice(0, 5);
     return (
         <Section

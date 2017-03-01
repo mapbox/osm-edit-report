@@ -1,8 +1,10 @@
 import R from 'ramda';
 import moment from 'moment';
 import dataTeam from 'mapbox-data-team';
-
+window.R = R;
+window.moment = moment;
 var usernames = dataTeam.getUsernames();
+window.usernames = usernames;
 /* Utils */
 // mapValues :: (v -> v) -> Object -> Object
 const mapValues = R.curry((fn, obj) =>
@@ -19,6 +21,8 @@ const getAllUserNames = R.compose(R.uniq, R.flatten, R.map(R.keys), R.values);
 // name -> data -> [{edits}]
 const getEditsByName = (name) => R.compose(sumEditObjs, R.filter(R.identity), R.pluck(name), R.values);
 
+// name -> data -> [[time: {edits}]
+
 /* Transforms */
 
 // type Data = {time:{user:{edit},...}
@@ -26,19 +30,22 @@ const getEditsByName = (name) => R.compose(sumEditObjs, R.filter(R.identity), R.
 const getEdits = R.pipe(R.values, R.map(R.values), R.flatten, sumEditObjs);
 
 // getEditsByUser :: Data -> {user:[{edits}]}
-const getEditsByUser = (data) => R.zipObj(
+const getEditsByAllUsers = (data) => R.zipObj(
         usernames, 
         R.juxt(usernames.map(getEditsByName))(data)
     );
 
-window.R = R;
 // getEditsByTime :: Data -> {time:[{edits}]}
 const getEditsByTime = (unit) =>
     R.pipe(R.toPairs,
         R.map(([date, edits]) => R.fromPairs([[transformDate(unit)(date), R.values(edits)]])),
-        R.reduce(concatValues, {}),
-        mapValues(sumEditObjs));
+        R.reduce(concatValues, {}));
 
+
+const sumEditsByTime = R.curry((unit, data) => {
+    return mapValues(sumEditObjs, getEditsByTime(unit)(data));
+});
+window.sumEditsByTime = sumEditsByTime;
 // [{edit}] -> {editSummed}
 function sumEditObjs(editArray) {
     var infoKeys = ['nodes', 'ways', 'relations', 'tags_created', 'tags_modified', 'tags_deleted', 'changesets'];
@@ -89,7 +96,7 @@ function sumEditObjs(editArray) {
 
     const tagsModified = getTags(zip.tags_modified);
     const tagsDeleted = getTags(zip.tags_deleted);
-    const tagsChanged = getTags(zip.tags_created);
+    const tagsCreated = getTags(zip.tags_created);
     return {
         nodes,
         ways,
@@ -97,37 +104,65 @@ function sumEditObjs(editArray) {
         objects,
         changesets: R.flatten(zip.changesets).length,
         tagsModified,
-        tagsChanged,
+        tagsCreated,
         tagsDeleted,
+        tags: tagsModified + tagsCreated + tagsDeleted,
         topTags: sortTopTags(zip)
     };
 }
 
+// {{time: {edit}}} -> { {usernames: {{time: {edit}} }
+function getEditsByUsersByTime(unit, data) {
+
+    const groupByTime = R.groupBy(a => a[0]);
+
+    // { time: ['timeStamp', editObject], time2: ['timeStamp', editObject]] => {time: editObject, time2: editObject}
+    const removeUnwantedData = R.map(R.map(arr => arr[1]));
+
+
+    const getEditsByTime = (unit) => {
+        return R.compose(removeUnwantedData, groupByTime, R.map(d => [transformDate(unit)(d[0]), d[1]]), R.toPairs);
+    }
+    // ('hour; { time: [{editObjs}] }) note: the general sumEditsByTime takes ('hour; { time: {user: [{editObjs}]})
+    const sumEditsByTime = R.curry((unit, data) => {
+        return mapValues(sumEditObjs, getEditsByTime(unit)(data));
+    });
+
+    const pluckUserName = R.curry((username, data) => sumEditsByTime(unit, R.filter(R.identity, R.pluck(username, data))));
+
+    const pluckUserNames = R.map(pluckUserName, usernames);
+
+    return R.zipObj(
+        usernames,
+        R.juxt(pluckUserNames)(data)
+    );
+}
+window.getEditsByUsersByTime = getEditsByUsersByTime;
 export default class Data {
     constructor(data) {
         this._data = data;
         this._edits  = getEdits(data);
-        this._byUser = getEditsByUser(data);
         this._dataTeam = dataTeam.getEverything();
-        this._usernames = 
         this._dataTeam = R.zipObj(R.pluck('username', this._dataTeam), this._dataTeam);
 
         this._byTime = {
-            hour: getEditsByTime('hour')(data),
-            day: getEditsByTime('day')(data),
-            week: getEditsByTime('week')(data),
-            month: getEditsByTime('month')(data),
+            hour: sumEditsByTime('hour', data),
+            day: sumEditsByTime('day', data),
+            week: sumEditsByTime('week', data),
+            month: sumEditsByTime('month', data),
         }
-        getEditsByName('randomshit');
+        this._byUser = {
+            hour: getEditsByUsersByTime('hour', data),
+            day: getEditsByUsersByTime('day', data),
+            week: getEditsByUsersByTime('week', data),
+            month: getEditsByUsersByTime('month', data),
+        }
+
         window.data = this;
+        window.getEditsByTime = getEditsByTime;
     }
-    getAllUsers() {
-        return Object.keys(this._byUser).map((k, i) => ({
-            ...this._byUser[k],
-            username: k,
-            userDetails: this._dataTeam[k],
-            id: i
-        }));
+    getByUsersByTime(t) {
+        return this._byUser[t];
     }
     getRawData() {
         return this._data;
@@ -171,7 +206,7 @@ export default class Data {
         } else if (key === 'tags') {
             format = R.keys(data).map((d) => ({
                 name: moment(d).format(dateFormat),
-                c: data[d].tagsChanged,
+                c: data[d].tagsCreated,
                 m: data[d].tagsModified,
                 d: data[d].tagsDeleted,
                 time: moment(d)
@@ -193,7 +228,7 @@ export default class Data {
         return R.keys(data).map((d) => {
             return {
                 name: moment(d).format('DD MMM'),
-                c: data[d].tagsChanged,
+                c: data[d].tagsCreated,
                 m: data[d].tagsModified,
                 d: data[d].tagsDeleted
             }
@@ -216,7 +251,7 @@ export default class Data {
         return R.keys(data).map((d) => {
             return {
                 name: d,
-                c: data[d].tagsChanged,
+                c: data[d].tagsCreated,
                 m: data[d].tagsModified,
                 d: data[d].tagsDeleted
             }
