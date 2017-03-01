@@ -68,7 +68,7 @@ const NumberCell = ({rowIndex, data, dataType,range,  columnKey, ...props}) => {
         cell = abbreviateNumber(cell);
     }
     return (
-        <Cell {...props} style={{ backgroundColor: range(raw) }} className={`color-gray-dark align-center border border--1 border--gray-light border-t--0 border-l--0 border-r--0 ${rowIndex % 2 ? 'bg-white' : ''}`}>
+        <Cell {...props} className={`color-gray-dark align-center border border--1 border--gray-light border-t--0 border-l--0 border-r--0`} style={{ backgroundColor: range(raw) }}>
             {cell}
         </Cell>
     )
@@ -306,6 +306,7 @@ export default class UserTable extends React.Component {
             h:213, s:27, l:60
         };
         let m = 0;
+        console.log(max);
         if (max !== 0) {
             m = (color.l - 100)/Math.sqrt(max);
         }

@@ -86,6 +86,6 @@ export default class FirstGraph extends React.Component {
                     </BarChart>
                 </ResponsiveContainer>
             </Section >
-        );[]
+        );
     }
 }

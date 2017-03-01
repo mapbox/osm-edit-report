@@ -23,13 +23,11 @@ class FiltersBar extends React.Component {
     render() {
         const CurComp = this.getComp();
         return (
-            <div className="filters-bar col col--offl8 col--4 border border--gray-light p12 round-b border-t--0">
-                <nav>
+            <div style={{ position: 'absolute'}} className="bg-white z5 filters-bar col col--offl6 col--4 border border--gray-light p12 round-b">
                     <CurComp 
                         filterValues={this.props.filterValues}
                         onChange={this.props.onChange}
                     />
-                </nav>
             </div>
         )
     }
