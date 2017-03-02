@@ -44,7 +44,6 @@ export default class UsersSelect extends React.Component {
                     valueKey="value"
                     labelKey="name"
                     placeholder="User filters"
-                    onBlur={this.props.onBlur}
                 />
             </div>
         );

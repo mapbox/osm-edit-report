@@ -34,7 +34,6 @@ class App extends Component {
                     <FirstGraph data={d} />
                     <TagsGraph data={d} />
                     <Table data={d} />
-                    
                 </div>
             </div>
         );
