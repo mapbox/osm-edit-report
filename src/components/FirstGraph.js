@@ -59,7 +59,7 @@ export default class FirstGraph extends React.Component {
                     <PillButton active={isChangesets} onClick={this.onChangeChangeSets} classes='btn--pill-hr'>Changesets</PillButton>
                     
                 </div>
-                <div className="flex-parent-inline">
+                <div className="flex-parent-inline mt6">
                     <PillButton active={isHour} onClick={this.onChangeHour} classes='btn--pill-hl'>Hourly</PillButton>
                     <PillButton active={isDay} onClick={this.onChangeHour} classes='btn--pill-hr'>Daily</PillButton>
                 </div>

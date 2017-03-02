@@ -22,11 +22,15 @@ class FiltersBar extends React.Component {
     }
     componentDidMount() {
         const el = document.getElementById('filters-bar');
-        const parentRight = el.parentNode.parentNode.getBoundingClientRect().right;
-        el.style.right = document.body.clientWidth - parentRight + 'px';
+        if (!el) return;
+        const parent = el.parentNode.parentNode.getBoundingClientRect();
+        el.style.right = (document.body.clientWidth - parent.right) + 'px';
+        el.style.top = ( parent.top + parent.height - 1) + 'px';
     }
     render() {
         const CurComp = this.getComp();
+        const el = document.getElementById('filters-bar');
+       
         return (
             <div style={{ position: 'absolute' }} id="filters-bar" className="bg-white z5 filters-bar col col--10 col--6-mm col--4-ml col--3-mxl border border--gray-light p12 round-b">
                     <CurComp 

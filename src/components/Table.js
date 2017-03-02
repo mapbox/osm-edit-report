@@ -347,7 +347,7 @@ export default class UserTable extends React.Component {
                     <PillButton active={isChangesets} onClick={this.onChangeChangeSets} classes='btn--pill-hr'>Changesets</PillButton>
 
                 </div>
-                <div className="flex-parent-inline">
+                <div className="flex-parent-inline mt6">
                     <PillButton active={isHour} onClick={this.onChangeHour} classes='btn--pill-hl'>Hourly</PillButton>
                     <PillButton active={isDay} onClick={this.onChangeHour} classes='btn--pill-hr'>Daily</PillButton>
                 </div>
@@ -356,7 +356,7 @@ export default class UserTable extends React.Component {
         return (
             <Section title="Users"
                 titleRightBottom={buttons}
-                titleBottom={`Avg: ${this.findAvg(byUsers)}`}
+                titleBottom={`Average: ${this.findAvg(byUsers)}`}
                 titleRight="&nbsp;"
             >
                 <div className="mx18 mt18">
