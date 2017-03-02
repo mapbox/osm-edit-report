@@ -1,10 +1,10 @@
 import React from 'react';
 import moment from 'moment';
 import {abbreviateNumber} from '../helper';
-import {Table, Column, Cell } from 'fixed-data-table';
+import {Table, Column, Cell } from 'fixed-data-table-2';
 import Section from './Section';
 import R from 'ramda';
-import 'fixed-data-table/dist/fixed-data-table.css';
+import 'fixed-data-table-2/dist/fixed-data-table.css';
 import Dimensions from 'react-dimensions';
 import ProfilePic from './ProfilePic';
 import { PillButton } from './PillButton';
@@ -221,8 +221,9 @@ class MyTable extends React.Component {
                 rowsCount={sortedDataList.getSize()}
                 headerHeight={60}
                 width={this.props.containerWidth}
-                height={Math.min((sortedDataList.getSize()+ 1) * 50)}
-                {...this.props}>
+                height={Math.max(document.body.clientWidth/2, 600)}
+                touchScrollEnabled={true}
+                >
                 <Column
                     header={<SortHeaderCell className="bg-white color-gray"/>}
                     cell={<ImageCell data={sortedDataList} col="avatar" />}
