@@ -57,6 +57,10 @@ class Header extends React.Component {
         this.props.getStats(filters);
     }
 
+    onBlur = () => {
+        return this.setState({ selectedFilter: null });
+    }
+
     render() {
         return (
             <div className="border-b border--gray-light">
@@ -68,12 +72,13 @@ class Header extends React.Component {
                     selectedFilter={this.state.selectedFilter}
                     filters={this.props.filters}
                     />
-                <div className="grid">
+                <div className="grid flex-parent--row-reverse">
                     {this.state.selectedFilter ?
                         <FiltersBar
                             selectedFilter={this.state.selectedFilter}
                             filterValues={this.props.filters}
                             onChange={this.onChange}
+                            onBlur={this.onBlur}
                         /> : null
                     }
                 </div>

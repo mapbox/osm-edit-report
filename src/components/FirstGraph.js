@@ -53,7 +53,7 @@ export default class FirstGraph extends React.Component {
         }
         const buttons = (
             <div>
-                <div className="flex-parent-inline mx12">
+                <div className="flex-parent-inline mx12-mm mx12-ml mx12-mxl">
                     <PillButton active={isTags} onClick={this.onChangeTags} classes='btn--pill-hl'>Tags</PillButton>
                     <PillButton active={isObjects} onClick={this.onChangeObjects} classes='btn--pill-hc'>Objects</PillButton>
                     <PillButton active={isChangesets} onClick={this.onChangeChangeSets} classes='btn--pill-hr'>Changesets</PillButton>

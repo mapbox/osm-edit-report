@@ -341,7 +341,7 @@ export default class UserTable extends React.Component {
         const range = this.findMaxMin(byUsers);
         const buttons = (
             <div>
-                <div className="flex-parent-inline mx12">
+                <div className="flex-parent-inline mx12-mm mx12-ml mx12-mxl">
                     <PillButton active={isObjects} onClick={this.onChangeObjects} classes='btn--pill-hl'>Objects</PillButton>
                     <PillButton active={isChangesets} onClick={this.onChangeChangeSets} classes='btn--pill-hr'>Changesets</PillButton>
 

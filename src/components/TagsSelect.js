@@ -49,6 +49,7 @@ export default class TagsSelect extends React.Component {
                     autoBlur
                     value={_value}
                     onChange={this.onChange}
+                    onBlur={this.props.onBlur}
                     valueKey="value"
                     labelKey="tag"
                     placeholder="Tag filters"

@@ -35,6 +35,7 @@ export default class DateSelect extends React.Component {
                     startDate={dateFrom}
                     endDate={dateTo}
                     onChange={this.onChangeTo}
+                    onBlur={this.props.onBlur}
                 />
             </div>
         )
