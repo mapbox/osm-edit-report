@@ -51,7 +51,7 @@ export default ({ toggleUsers, toggleTags, toggleDate, toggleBbox, selectedFilte
 export const MyButton = ({children, onClick, selectedFilter, filled}) => {
     const type = children && children.toLowerCase();
     const active = selectedFilter === type;
-    let color = !active ? 'bg-gray-faint-on-hover' : 'bg-gray-faint unround-b-mm';
+    let color = !active ? 'bg-gray-faint-on-hover' : 'bg-gray-faint unround-b';
     if (filled) {
         color = 'bg-gray-faint';
     }
