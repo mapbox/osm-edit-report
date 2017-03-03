@@ -28,8 +28,6 @@ class Header extends React.Component {
     componentDidMount() {
         window.addEventListener("scroll",() => {
             const scroll = document.body.scrollTop;
-            console.log('scrolling');
-            
             if (scroll >= 54 && !this.state.sticky) {
                 this.setState({
                     sticky : true,

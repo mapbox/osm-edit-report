@@ -13,7 +13,7 @@ const mapValues = R.curry((fn, obj) =>
 // {k: [v]} -> {k: [v]} -> {k: [v]}
 const concatValues = R.mergeWith(R.concat);
 
-const transformDate = R.curry((unit, date) => moment(date).startOf(unit).utc().format());
+const transformDate = R.curry((unit, date) => moment(date).startOf(unit).toISOString());
 
 // data -> [names]
 const getAllUserNames = R.compose(R.uniq, R.flatten, R.map(R.keys), R.values);

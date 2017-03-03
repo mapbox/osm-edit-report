@@ -9,7 +9,7 @@ function stats(state = {}, action) {
     case 'RECEIVE_STATS': {
         return {
             ...state,
-            data: new StatsData(action.data.data),
+            data: new StatsData(action.data),
             loading: false
         }
     }

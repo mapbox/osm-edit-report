@@ -22,6 +22,7 @@
     "fixed-data-table-2": "^0.7.11",
     "gh-pages": "^0.12.0",
     "lodash.debounce": "^4.0.8",
+    "lscache": "^1.1.0",
     "mapbox-data-team": "^1.2.1",
     "moment": "^2.17.1",
     "query-string": "^4.3.2",
