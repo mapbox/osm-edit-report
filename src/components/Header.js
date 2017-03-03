@@ -13,15 +13,34 @@ class Header extends React.Component {
         setDateFrom: React.PropTypes.func,
         setDateTo: React.PropTypes.func,
         setTags: React.PropTypes.func,
-        filters: React.PropTypes.object
+        filters: React.PropTypes.object,
+        stats: React.PropTypes.object
     }
 
     constructor(props) {
         super(props);
         this.state = {
             showFiltersBar: false,
-            selectedFilter: null
+            selectedFilter: null,
+            sticky: false
         }
+    }
+    componentDidMount() {
+        window.addEventListener("scroll",() => {
+            const scroll = document.body.scrollTop;
+            console.log('scrolling');
+            
+            if (scroll >= 54 && !this.state.sticky) {
+                this.setState({
+                    sticky : true,
+                })
+            }
+            if (scroll < 54 && this.state.sticky) {
+                this.setState({
+                    sticky: false,
+                });
+            }
+        });
     }
 
     toggleTags = () => {
@@ -57,13 +76,9 @@ class Header extends React.Component {
         this.props.getStats(filters);
     }
 
-    onBlur = () => {
-        return this.setState({ selectedFilter: null });
-    }
-
     render() {
         return (
-            <div className="border-b border--gray-light">
+            <div id="header" className={`${this.state.sticky ? '': 'border-b border--gray-light'}`}>
                 <NavBar
                     toggleDate={this.toggleDate}
                     toggleUsers={this.toggleUsers}
@@ -71,6 +86,8 @@ class Header extends React.Component {
                     toggleBbox={this.toggleBbox}
                     selectedFilter={this.state.selectedFilter}
                     filters={this.props.filters}
+                    sticky={this.state.sticky}
+                    loading={this.props.stats.loading}
                     />
                 <div className="grid flex-parent--row-reverse">
                     {this.state.selectedFilter ?
@@ -79,6 +96,7 @@ class Header extends React.Component {
                             filterValues={this.props.filters}
                             onChange={this.onChange}
                             onBlur={this.onBlur}
+                            sticky={this.state.sticky}
                         /> : null
                     }
                 </div>
