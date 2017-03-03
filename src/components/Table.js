@@ -24,9 +24,9 @@ function reverseSortDirection(sortDir) {
 
 class SortHeaderCell extends React.Component {
     render() {
-        var {sortDir, children, ...props} = this.props;
+        var {sortDir, children, onSortChange, ...props} = this.props;
         return (
-            <Cell  {...props}>
+            <Cell {...props}>
                 <a onClick={this._onSortChange} className="cursor-pointer">
                     {children} {sortDir ? (sortDir === SortTypes.DESC ? '↓' : '↑') : ''}
                 </a>
