@@ -9,18 +9,21 @@ function stats(state = {}, action) {
     case 'RECEIVE_STATS': {
         return {
             ...state,
-            data: new StatsData(action.data.data)
+            data: new StatsData(action.data.data),
+            loading: false
         }
     }
     case 'NETWORK_ERROR':
         return {
             ...state,
-            data: undefined
+            data: undefined,
+            loading: false
         }
     case 'REQUEST_STATS':
         return {
             ...state,
-            data: undefined
+            data: undefined,
+            loading: true
         }
     default:
         return state;
