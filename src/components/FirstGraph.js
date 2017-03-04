@@ -52,6 +52,8 @@ export default class FirstGraph extends React.Component {
         let byTime = d.getByTime(this.state.time);
         let format = d.timeFormatEdits(byTime, this.state.type, 'DD MMM');
         let sum = format.reduce((prev, cur) => prev + cur.c + cur.d + cur.m, 0);
+        let lastestEdits = format[format.length - 1];
+        lastestEdits = lastestEdits.c + lastestEdits.d + lastestEdits.m;
         if (isHour) {
             format = R.takeLast(24, d.timeFormatEdits(byTime, this.state.type, 'MM/DD HH:00'));
         }
@@ -76,7 +78,7 @@ export default class FirstGraph extends React.Component {
             <Section title="Edits" 
                 titleRightBottom={buttons}
                 titleBottom={`Total: ${abbreviateNumber(sum)}`}
-                titleRight="&nbsp;"
+                titleRight={`Today: ${abbreviateNumber(lastestEdits)}`}
                 >
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={format}

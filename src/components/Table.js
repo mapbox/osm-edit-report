@@ -339,6 +339,7 @@ export default class UserTable extends React.Component {
             timeFormat = 'MM/DD HH:00';
             timeKeys = R.takeLast(24, timeKeys);
         }
+        
         const range = this.findMaxMin(byUsers);
         const buttons = (
             <div>
