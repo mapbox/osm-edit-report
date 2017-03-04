@@ -10,7 +10,14 @@ export default class FirstGraph extends React.Component {
         super(props);
         this.state = {
             time: 'day',
-            type: 'objects'
+            type: props.hasTagFilter ? 'tags' : 'objects'
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.hasTagFilter) {
+            this.setState({
+                type: 'tags'
+            });
         }
     }
     onChangeHour = () => {

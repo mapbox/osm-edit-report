@@ -29,7 +29,7 @@ export default ({ toggleUsers, toggleTags, toggleDate, toggleBbox, selectedFilte
             <div className="flex-parent flex-parent--row-reverse">
                 <div className={`z5 flex-parent flex-parent--row  bg-white ${sticky ? '' : 'w-full'}`} style={stickyHeader(sticky)}>
                     <div className="flex-child flex-child--grow">
-                        <div className="loading loading--s" style={{ marginTop: 6, visibility: loading ? 'visibile': 'hidden' }} />
+                        <div className={`${loading ? 'loading' : ''} loading--s`} style={{ marginTop: 6 }} />
                     </div>
                     <div className="flex-child flex-parent flex-parent--row">
                         <div className="header-filters flex-child">

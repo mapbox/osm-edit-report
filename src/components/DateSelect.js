@@ -1,20 +1,27 @@
 import DatePicker from 'react-datepicker';
 import React from 'react';
-
+import moment from 'moment';
 export default class DateSelect extends React.Component {
-    onChangeFrom = (d) => {
+    onChangeFrom = (_d) => {
+        const d = moment(_d.toISOString());
         let filterValues = this.props.filterValues;
-        filterValues.dateFrom = d;
+        filterValues.dateFrom = d.startOf('day');
         this.props.onChange(filterValues);
     }
-    onChangeTo = (d) => {
+    onChangeTo = (_d) => {
+        const d = moment(_d.toISOString());
         let filterValues = this.props.filterValues;
-        filterValues.dateTo = d;
+        if (d.startOf('day').isSame(moment(), 'day')) {
+            filterValues.dateTo = moment().endOf('hour');
+            console.log(filterValues.dateTo.toISOString())
+        } else {
+            filterValues.dateTo = d.clone().endOf('day');
+        }
         this.props.onChange(filterValues)
     }
     render() {
-        const dateFrom = this.props.filterValues && this.props.filterValues.dateFrom;
-        const dateTo = this.props.filterValues && this.props.filterValues.dateTo;
+        const dateFrom = moment(this.props.filterValues && this.props.filterValues.dateFrom.toISOString());
+        const dateTo = moment(this.props.filterValues && this.props.filterValues.dateTo.toISOString());
         
         return (
             <div className="flex-parent flex-parent--row space-around">

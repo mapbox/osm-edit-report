@@ -75,6 +75,8 @@ class Header extends React.Component {
     }
 
     render() {
+        const topTags = this.props.stats.data && this.props.stats.data.getEdits().topTags;
+    
         return (
             <div id="header" className={`${this.state.sticky ? '': 'border-b border--gray-light'}`}>
                 <NavBar
@@ -95,6 +97,7 @@ class Header extends React.Component {
                             onChange={this.onChange}
                             onBlur={this.onBlur}
                             sticky={this.state.sticky}
+                            topTags={topTags || []}
                         /> : null
                     }
                 </div>

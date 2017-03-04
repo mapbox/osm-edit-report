@@ -42,28 +42,11 @@ export function closeErrorModal(error) {
 
 export function getStats(filters) {
     var params = [];
-    if (filters) {
-        const { users, dateFrom, dateTo, tags, bbox } = filters;
-        if (users) {
-            params.push(`users=${users}`);
-        }
-        if (moment.isMoment(dateFrom)) {
-            params.push(`from=${dateFrom.startOf('day').toISOString()}`);
-        }
-        if (moment.isMoment(dateTo)) {
-            params.push(`to=${dateTo.add(1, 'hour').startOf('hour').toISOString()}`);
-        }
-        if (tags) {
-            params.push(`tags=${tags}`);
-        }
-        if (bbox) {
-            params.push(`bbox=${bbox}`);
-        }
-    }
+   
     return dispatch => {
         dispatch(closeErrorModal());
         dispatch(requestStats())
-        return network.get(params)
+        return network.get(filters)
             .then(d => {
                 dispatch(receiveStats(d))
             })

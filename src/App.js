@@ -22,6 +22,7 @@ class App extends Component {
         const { showErrorModal, errorMessage } = this.props.modals;
         const { closeErrorModal } = this.props.actions;
         var d = this.props.stats.data;
+        var hasTagFilter = this.props.filters.tags;
         return (
             <div className="viewport-full col--10-ml col--10-mxl col--offl1-ml col--offl1-mxl">
                 <Header />
@@ -31,7 +32,7 @@ class App extends Component {
                     onClose={closeErrorModal}
                 />
                 <div className="flex-parent flex-parent--column align-items--center">
-                    <FirstGraph data={d} />
+                    <FirstGraph data={d} hasTagFilter={hasTagFilter}/>
                     <TagsGraph data={d} />
                     <Table data={d} />
                 </div>
