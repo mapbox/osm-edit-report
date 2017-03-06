@@ -1,16 +1,15 @@
 import { create } from 'apisauce';
-import cache from 'lscache';
+// import cache from 'lscache';
 import R from 'ramda';
 import moment from 'moment';
+const cache = new Map();
+
 const api = create({
     baseURL: 'https://osm-comments-api.mapbox.com/api/v1',
     headers: { 'Accept': 'application/json' }
 });
 
 class Network {
-    constructor() {
-
-    }
     get(filters) {
         return this.apiGet(filters);
     }
@@ -37,7 +36,7 @@ class Network {
         return params.length > 0 ? params.join('&') : '';
     }
     setCache(data, filters) {
-        cache.set(this.getCacheQueryStr(filters), data, 30);
+        cache.set(this.getCacheQueryStr(filters), data);
     }
     getCache() {
         let data = cache.get(this.getCacheQueryStr(this.filters));
