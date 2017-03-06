@@ -55,7 +55,7 @@ export default class FirstGraph extends React.Component {
         let lastestEdits = format[format.length - 1];
         lastestEdits = lastestEdits.c + lastestEdits.d + lastestEdits.m;
         if (isHour) {
-            format = R.takeLast(24, d.timeFormatEdits(byTime, this.state.type, 'MM/DD HH:00'));
+            format = R.takeLast(150, d.timeFormatEdits(byTime, this.state.type, 'MM/DD HH:00'));
         }
         if (isChangesets) {
             sum = format.reduce((prev, cur) => prev + cur.c, 0);
@@ -78,7 +78,7 @@ export default class FirstGraph extends React.Component {
             <Section title="Edits" 
                 titleRightBottom={buttons}
                 titleBottom={`Total: ${abbreviateNumber(sum)}`}
-                titleRight={`Today: ${abbreviateNumber(lastestEdits)}`}
+                titleRight={`${isHour ? 'Last hour' : 'Today'} ${abbreviateNumber(lastestEdits)}`}
                 >
                 <ResponsiveContainer width="100%" height={300}>
                     <BarChart data={format}
@@ -90,6 +90,7 @@ export default class FirstGraph extends React.Component {
                         <Tooltip />
                         <Legend />
                         <Bar dataKey="c" stackId="a" fill="#607d9c" />
+                        {format.length > 20 ? <Brush dataKey='name' height={25} travellerWidth={10} startIndex={Math.max(0, format.length - 1 - 24)} stroke="#607d9c" /> : null}
                         {!isChangesets ? <Bar dataKey="m" stackId="a" fill="#273d56" /> : null }
                         {!isChangesets ? <Bar dataKey="d" stackId="a" fill="#269561" /> : null }
                     </BarChart>
