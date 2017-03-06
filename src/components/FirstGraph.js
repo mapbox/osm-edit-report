@@ -80,7 +80,7 @@ export default class FirstGraph extends React.Component {
                 titleBottom={`Total: ${abbreviateNumber(sum)}`}
                 titleRight={`${isHour ? 'Last hour' : 'Today'} ${abbreviateNumber(lastestEdits)}`}
                 >
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={300} className="no-select">
                     <BarChart data={format}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                         layout={this.props.layout}
