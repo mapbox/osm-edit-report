@@ -52,7 +52,7 @@ export default class MapSelect extends React.Component {
         return (
             <div className="map-select">
                 <div onClick={this.mapLock} className={`pointer map-clear z5 ${styleLock}  inline-block px6 py3 txt-xs txt-bold round-full fr`}>
-                    {bboxLocked ? 'Clear' : 'Lock'}
+                    {bboxLocked ? 'Clear' : 'Apply'}
                 </div>
                 <div id="map" style={{height: 300 }}>
                 </div>
