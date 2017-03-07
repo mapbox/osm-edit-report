@@ -99,7 +99,7 @@ const OsmCell = ({rowIndex, data, ...props}) => {
     let cell = data.getObjectAt(rowIndex);
     return (
         <Cell {...props} className={`border border--1 border--gray-light border-t--0 border-l--0 border-r--0 ${rowIndex % 2 ? 'bg-white' : ''}`}>
-            <a href={`https://www.openstreetmap.org/user/${cell}`} className="link link--gray">{cell[0]}</a>
+            <a href={`https://www.openstreetmap.org/user/${cell[0]}`} className="link link--gray">{cell[0]}</a>
             {getTodayIcon(cell[2], cell[4])}
         </Cell>
     );

@@ -45,6 +45,7 @@
     "test": "react-scripts test --env=jsdom",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build -o origin -b hey-pages",
+    "deploy-mb": "gh-pages -d build -o origin -b mb-pages",
     "eject": "react-scripts eject",
     "lint": "eslint src"
   },
