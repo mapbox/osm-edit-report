@@ -50,11 +50,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/mapbox/osm-edit-report-v2.git"
+    "url": "https://github.com/mapbox/osm-edit-report.git"
   },
   "author": "Mapbox",
   "bugs": {
-    "url": "https://github.com/mapbox/osm-edit-report-v2/issues"
+    "url": "https://github.com/mapbox/osm-edit-report/issues"
   },
-  "homepage": "https://hey.mapbox.com/osm-edit-report-v2"
+  "homepage": "https://hey.mapbox.com/osm-edit-report"
 }
