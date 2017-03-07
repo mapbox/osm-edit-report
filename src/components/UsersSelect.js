@@ -1,6 +1,7 @@
 import dataTeam from 'mapbox-data-team';
 import React from 'react';
 import Select from 'react-select';
+import debounce from 'lodash.debounce';
 
 export default class UsersSelect extends React.Component {
     constructor(props) {

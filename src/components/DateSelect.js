@@ -1,42 +1,69 @@
 import DatePicker from 'react-datepicker';
 import React from 'react';
-
+import moment from 'moment';
+import {PillButton} from './PillButton';
 export default class DateSelect extends React.Component {
-    onChangeFrom = (d) => {
-        let filterValues = this.props.filterValues;
-        filterValues.dateFrom = d;
-        this.props.onChange(filterValues);
+    constructor(props) {
+        super(props);
+        this.state = {
+            dateFrom: moment(props.filterValues && props.filterValues.dateFrom.toISOString()),
+            dateTo: moment(props.filterValues && props.filterValues.dateTo.toISOString())
+        }
     }
-    onChangeTo = (d) => {
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            dateFrom: moment(nextProps.filterValues && nextProps.filterValues.dateFrom.toISOString()),
+            dateTo: moment(nextProps.filterValues && nextProps.filterValues.dateTo.toISOString())
+        });
+    }
+    onChangeFrom = (_d) => {
+        const d = moment(_d.toISOString());
+        this.setState({dateFrom: d.startOf('day').add(0.5, 'hour')});
+    }
+    onChangeTo = (_d) => {
+        const d = moment(_d.toISOString());
+        let dateTo;
+        if (d.startOf('day').isSame(moment(), 'day')) {
+            dateTo = moment().endOf('hour');
+        } else {
+            dateTo = d.clone().endOf('day').subtract(0.5, 'hour')
+        ;
+        }
+        this.setState({dateTo});
+    }
+    handleClick = () => {
         let filterValues = this.props.filterValues;
-        filterValues.dateTo = d;
+        filterValues.dateFrom = this.state.dateFrom;
+        filterValues.dateTo = this.state.dateTo;
         this.props.onChange(filterValues)
     }
     render() {
-        const dateFrom = this.props.filterValues && this.props.filterValues.dateFrom;
-        const dateTo = this.props.filterValues && this.props.filterValues.dateTo;
-        
+
         return (
             <div className="flex-parent flex-parent--row space-around">
                 <DatePicker
                     className="input my6 w-full"
                     selectsStart
-                    selected={dateFrom}
-                    startDate={dateFrom}
+                    selected={this.state.dateFrom}
+                    startDate={this.state.dateFrom}
                     placeholderText="Enter from"
-                    endDate={dateTo}
+                    endDate={this.state.dateTo}
                     onChange={this.onChangeFrom}
+                    maxDate={moment()}
                 />
                 <DatePicker
                     selectsEnd
                     className="input my6 w-full"
                     placeholderText="Enter To"
-                    selected={dateTo}
-                    startDate={dateFrom}
-                    endDate={dateTo}
+                    selected={this.state.dateTo}
+                    startDate={this.state.dateFrom}
+                    endDate={this.state.dateTo}
                     onChange={this.onChangeTo}
-                    onBlur={this.props.onBlur}
+                    maxDate={moment()}
                 />
+                <div className="block align-center mt12">
+                    <PillButton classes="mx6" onClick={this.handleClick}>Apply</PillButton>
+                </div>
             </div>
         )
     }

@@ -13,7 +13,7 @@ const mapValues = R.curry((fn, obj) =>
 // {k: [v]} -> {k: [v]} -> {k: [v]}
 const concatValues = R.mergeWith(R.concat);
 
-const transformDate = R.curry((unit, date) => moment(date).startOf(unit).utc().format());
+const transformDate = R.curry((unit, date) => moment(date).startOf(unit).toISOString());
 
 // data -> [names]
 const getAllUserNames = R.compose(R.uniq, R.flatten, R.map(R.keys), R.values);
@@ -52,7 +52,6 @@ function sumEditObjs(editArray) {
     const pluck = R.map(R.pluck, infoKeys);
     // adds an array of similar object [{obj}] -> {obj}
     const addSameObjs = R.curry((base, data) => R.reduce(R.mergeWith(R.add), base)(data));
- 
     
     let zip = R.zipObj(infoKeys, R.juxt(pluck)(editArray))
     // zip = nodes: {c,m,d}, ways: {c,m,d}, rel: {c,m,d}

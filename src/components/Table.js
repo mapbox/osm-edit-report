@@ -21,7 +21,20 @@ function isObject(val) {
 function reverseSortDirection(sortDir) {
     return sortDir === SortTypes.DESC ? SortTypes.ASC : SortTypes.DESC;
 }
-
+function sumCdm(cdm) {
+    if (typeof cdm === 'number') return cdm;
+    return (cdm.c || 0) +( cdm.d || 0)+ (cdm.m || 0);
+}
+function getTodayIcon(avg, latestEdits) {
+    if (latestEdits >=  1.2 * avg && latestEdits !== 0) {
+        return <svg className='icon inline color-green'><use xlinkHref='#icon-chevron-up' /></svg>;
+    }
+    else if (latestEdits < 0.5 * avg && latestEdits !== 0) {
+        return <svg className='icon inline color-red'><use xlinkHref='#icon-chevron-down' /></svg>;
+    } else {
+        return null;
+    }
+}
 class SortHeaderCell extends React.Component {
     render() {
         var {sortDir, children, onSortChange, ...props} = this.props;
@@ -83,10 +96,11 @@ const TextCell = ({rowIndex, data, columnKey, ...props}) => {
     );
 };
 const OsmCell = ({rowIndex, data, ...props}) => {
-    let cell = data.getObjectAt(rowIndex)[0];
+    let cell = data.getObjectAt(rowIndex);
     return (
         <Cell {...props} className={`border border--1 border--gray-light border-t--0 border-l--0 border-r--0 ${rowIndex % 2 ? 'bg-white' : ''}`}>
-            <a href={`https://www.openstreetmap.org/user/${cell}`} className="link link--gray">{cell}</a>
+            <a href={`https://www.openstreetmap.org/user/${cell}`} className="link link--gray">{cell[0]}</a>
+            {getTodayIcon(cell[2], cell[4])}
         </Cell>
     );
 };
@@ -241,7 +255,7 @@ class MyTable extends React.Component {
                         </SortHeaderCell>
                     }
                     cell={<OsmCell data={sortedDataList} />}
-                    width={150}
+                    width={160}
                 />
                 {
                     this.props.timeKeys.map(t => 
@@ -276,8 +290,7 @@ export default class UserTable extends React.Component {
             type: 'objects'
         }
         this.notEmpty = R.compose(R.not, R.isEmpty);
-        this.flatten = R.curry((dataType, data) => R.compose(R.unnest, R.filter(this.notEmpty), R.map((d) => R.pluck(dataType, R.values(d[1]))))(data));
-    
+        this.flatten = R.curry((dataType, data) => R.compose(R.unnest, R.values, R.pluck(dataType))(data));
     }
     onChangeHour = () => {
         this.setState({
@@ -294,22 +307,35 @@ export default class UserTable extends React.Component {
             type: 'changesets'
         })
     }
-    findMaxMin(byUsers) {
-        let flat = this.flatten(this.state.type, byUsers);
-        if (this.state.type === 'objects') {
-            flat = flat.map((o) => o.c + o.m + o.d);
-        }
-        flat = flat.filter((a) => a !== 0 && !Number.isNaN(parseInt(a, 10)));
-        return this.mapper(R.apply(Math.min, flat), R.apply(Math.max, flat));
+    // [[uname, edit, avg, max]] => hslColorFunc
+    findMaxColor(metrics) {
+        var maxUsers = metrics.map(d => d[3]);
+        return this.mapper(0, R.apply(Math.max, maxUsers));
     }
-    findAvg(byUsers) {
-        let flat = this.flatten(this.state.type, byUsers);
-        if (this.state.type === 'objects') {
-            flat = flat.map((o) => o.c + o.m + o.d);
+    // ([uname, edit], timeKeysLen) => [[name, edit, avg, max]]
+    findUserMetrics(byUsers, timeKeys) {
+        const findNLatestEdit = (n, d) => {
+            const timeEntry = timeKeys[timeKeys.length - n]; 
+            var edit = d[1][timeEntry];
+            return edit ? sumCdm(edit[this.state.type]) : 0;
         }
-        flat = flat.filter((a) => a !== 0 && !Number.isNaN(parseInt(a, 10)));
-        if (flat.length === 0) return 0;
-        let avg = parseInt(R.sum(flat)/flat.length, 10);
+        return byUsers.map(d => {
+            let flat = this.flatten(this.state.type, d[1]);
+            const hourSinceDayStart = moment().hour();
+            const latestPerformance = (hourSinceDayStart / 24) * findNLatestEdit(1, d) + ((24 - hourSinceDayStart)/24)* findNLatestEdit(2,d);
+            
+            if (this.state.type === 'objects') {
+                flat = R.compose(R.unnest, R.map(R.values))(flat);
+            }
+
+            const avg = parseInt(R.sum(flat) / timeKeys.length, 10);
+            
+            return [d[0], d[1], avg, R.apply(Math.max, flat), latestPerformance];
+        });
+    }
+    findAvg(metrics) {
+        var avgUsers = metrics.map(d => d[2])
+        let avg = parseInt(R.sum(avgUsers) / avgUsers.length, 10);
         return abbreviateNumber(avg);
     }
     mapper(min, max) {
@@ -334,12 +360,15 @@ export default class UserTable extends React.Component {
         const isChangesets = this.state.type === 'changesets';
         let timeKeys = Object.keys(data.getByTime(this.state.time))
             .sort((a, b) => moment(a).diff(moment(b)));
+        const metrics = this.findUserMetrics(byUsers, timeKeys);
+
         let timeFormat = 'DD MMM';
+
         if (isHour) {
             timeFormat = 'MM/DD HH:00';
-            timeKeys = R.takeLast(24, timeKeys);
+            timeKeys = R.takeLast(48, timeKeys);
         }
-        const range = this.findMaxMin(byUsers);
+        const range = this.findMaxColor(metrics);
         const buttons = (
             <div>
                 <div className="flex-parent-inline mx12-mm mx12-ml mx12-mxl">
@@ -356,11 +385,11 @@ export default class UserTable extends React.Component {
         return (
             <Section title="Users"
                 titleRightBottom={buttons}
-                titleBottom={`Average: ${this.findAvg(byUsers)}`}
+                titleBottom={`Average: ${this.findAvg(metrics)}`}
                 titleRight="&nbsp;"
             >
                 <div className="mx18 mt18">
-                    <MyTable range={range} data={byUsers} timeKeys={timeKeys} timeFormat={timeFormat} dataType={this.state.type}/>
+                    <MyTable range={range} data={metrics} timeKeys={timeKeys} timeFormat={timeFormat} dataType={this.state.type}/>
                 </div>
             </Section>
         )

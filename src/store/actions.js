@@ -1,6 +1,5 @@
-import api from './api';
 import moment from 'moment';
-
+import network from '../data/network'
 function requestStats() {
     return {
         type: 'REQUEST_STATS'
@@ -43,35 +42,17 @@ export function closeErrorModal(error) {
 
 export function getStats(filters) {
     var params = [];
-    if (filters) {
-        const { users, dateFrom, dateTo, tags, bbox } = filters;
-        if (users) {
-            params.push(`users=${users}`);
-        }
-        if (moment.isMoment(dateFrom)) {
-            params.push(`from=${dateFrom.utc().format()}`);
-        }
-        if (moment.isMoment(dateTo)) {
-            params.push(`to=${dateTo.utc().format()}`);
-        }
-        if (tags) {
-            params.push(`tags=${tags}`);
-        }
-        if (bbox) {
-            params.push(`bbox=${bbox}`);
-        }
-    }
+   
     return dispatch => {
         dispatch(closeErrorModal());
         dispatch(requestStats())
-        return api.get(`/stats?${ params.length > 0 ? params.join('&') : '' }`)
+        return network.get(filters)
             .then(d => {
-                if (d.problem) {
-                    dispatch(openErrorModal(d.problem));
-                    return dispatch(networkError(d.problem));
-                }
                 dispatch(receiveStats(d))
-            });
-
+            })
+            .catch(e => {
+                dispatch(openErrorModal(e));
+                return dispatch(networkError(e));
+            })
     };
 }

@@ -9,7 +9,7 @@ export default function Section({children, title, titleBottom, titleRight, title
                     <h2 className="txt-l txt-light"> {titleBottom} </h2>
                 </div>
                 <div className="align-r">
-                    <h2 className="txt-subhead txt-light"> {titleRight} </h2>
+                    <h2 className="txt-l txt-light"> {titleRight} </h2>
                     {titleRightBottom}
                 </div>
             </div>

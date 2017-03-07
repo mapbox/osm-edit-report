@@ -25,7 +25,6 @@ class FiltersBar extends React.Component {
         if (!el) return;
         const parent = el.parentNode.parentNode.getBoundingClientRect();
         el.style.right = (document.body.clientWidth - parent.right) + 'px';
-        el.style.top = ( parent.top + parent.height - 1) + 'px';
     }
     render() {
         const CurComp = this.getComp();
@@ -35,6 +34,7 @@ class FiltersBar extends React.Component {
                     <CurComp 
                         filterValues={this.props.filterValues}
                         onChange={this.props.onChange}
+                        topTags={this.props.topTags}
                     />
             </div>
         )

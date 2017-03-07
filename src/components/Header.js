@@ -28,8 +28,6 @@ class Header extends React.Component {
     componentDidMount() {
         window.addEventListener("scroll",() => {
             const scroll = document.body.scrollTop;
-            console.log('scrolling');
-            
             if (scroll >= 54 && !this.state.sticky) {
                 this.setState({
                     sticky : true,
@@ -71,12 +69,14 @@ class Header extends React.Component {
         this.setState({ selectedFilter: 'bbox' });
     }
 
-    onChange = (filters) => {
+    onChange = (filters, preventGetStats) => {
         this.props.setFilter(filters);
         this.props.getStats(filters);
     }
 
     render() {
+        const topTags = this.props.stats.data && this.props.stats.data.getEdits().topTags;
+    
         return (
             <div id="header" className={`${this.state.sticky ? '': 'border-b border--gray-light'}`}>
                 <NavBar
@@ -88,6 +88,7 @@ class Header extends React.Component {
                     filters={this.props.filters}
                     sticky={this.state.sticky}
                     loading={this.props.stats.loading}
+                    timeOfReceive={this.props.stats.timeOfReceive}
                     />
                 <div className="grid flex-parent--row-reverse">
                     {this.state.selectedFilter ?
@@ -97,6 +98,7 @@ class Header extends React.Component {
                             onChange={this.onChange}
                             onBlur={this.onBlur}
                             sticky={this.state.sticky}
+                            topTags={topTags || []}
                         /> : null
                     }
                 </div>

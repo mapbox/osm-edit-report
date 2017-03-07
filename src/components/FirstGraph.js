@@ -10,7 +10,14 @@ export default class FirstGraph extends React.Component {
         super(props);
         this.state = {
             time: 'day',
-            type: 'objects'
+            type: props.hasTagFilter ? 'tags' : 'objects'
+        }
+    }
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.hasTagFilter) {
+            this.setState({
+                type: 'tags'
+            });
         }
     }
     onChangeHour = () => {
@@ -33,6 +40,16 @@ export default class FirstGraph extends React.Component {
             type: 'changesets'
         })
     }
+    getTodayIcon(avg, latestEdits) {
+        if (latestEdits > (1.2 * avg)) {
+            return <svg className='icon inline color-green'><use xlinkHref='#icon-chevron-up'/></svg>;
+        }
+        else if (latestEdits < 0.8 * avg) {
+            return <svg className='icon inline color-red'><use xlinkHref='#icon-chevron-down' /></svg>;
+        } else {
+            return null;
+        }
+    }
     render() {
         const d = this.props.data;
         if (!d) return null;
@@ -44,13 +61,23 @@ export default class FirstGraph extends React.Component {
 
         let byTime = d.getByTime(this.state.time);
         let format = d.timeFormatEdits(byTime, this.state.type, 'DD MMM');
-        let sum = format.reduce((prev, cur) => prev + cur.c + cur.d + cur.m, 0);
+        let sum = format.reduce((prev, cur) => prev + cur.c + (cur.d || 0) + (cur.m || 0), 0);
+        const avg = sum/format.length;
+
+        let latestEdits = format[format.length - 1];
+        latestEdits = latestEdits.c + (latestEdits.d || 0) + (latestEdits.m || 0);
+        
+        const todayIcon = this.getTodayIcon(avg, latestEdits);
+        const titleRight = (
+            <span>
+                <span>{`${isHour ? 'Last hour' : 'Today'} ${abbreviateNumber(latestEdits)}`} {todayIcon} </span>
+            </span>
+        )
+
         if (isHour) {
-            format = R.takeLast(24, d.timeFormatEdits(byTime, this.state.type, 'MM/DD HH:00'));
+            format = R.takeLast(150, d.timeFormatEdits(byTime, this.state.type, 'MM/DD HH:00'));
         }
-        if (isChangesets) {
-            sum = format.reduce((prev, cur) => prev + cur.c, 0);
-        }
+      
         const buttons = (
             <div>
                 <div className="flex-parent-inline mx12-mm mx12-ml mx12-mxl">
@@ -69,9 +96,9 @@ export default class FirstGraph extends React.Component {
             <Section title="Edits" 
                 titleRightBottom={buttons}
                 titleBottom={`Total: ${abbreviateNumber(sum)}`}
-                titleRight="&nbsp;"
+                titleRight={titleRight}
                 >
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={300} className="no-select">
                     <BarChart data={format}
                         margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
                         layout={this.props.layout}
@@ -79,8 +106,9 @@ export default class FirstGraph extends React.Component {
                         <YAxis />
                         <CartesianGrid strokeDasharray="3 3" />
                         <Tooltip />
-                        <Legend />
+                        <Legend payload={isChangesets ? undefined : [{ type: 'rect', dataKey: 'c', value: 'created', color: '#607d9c' }, { type: 'rect', dataKey: 'd', value: 'deleted', color: '#269561' }, { type: 'rect', dataKey: 'm', value: 'modified', color: '#273d56' }]}/>
                         <Bar dataKey="c" stackId="a" fill="#607d9c" />
+                        {format.length > 20 ? <Brush dataKey='name' height={40} startIndex={Math.max(0, format.length - 1 - 24)} stroke="#607d9c" /> : null}
                         {!isChangesets ? <Bar dataKey="m" stackId="a" fill="#273d56" /> : null }
                         {!isChangesets ? <Bar dataKey="d" stackId="a" fill="#269561" /> : null }
                     </BarChart>

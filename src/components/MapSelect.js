@@ -36,7 +36,6 @@ export default class MapSelect extends React.Component {
         return [w, s, e, n].join(',');
     }
     mapLock = () => {
-        console.log('here', this.props.filterValues.bbox)
         if (this.props.filterValues.bbox) { return this.clearBbox() };
         let filterValues = this.props.filterValues;
         filterValues.bbox = this.getSWNE();

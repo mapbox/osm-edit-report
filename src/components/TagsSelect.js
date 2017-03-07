@@ -15,15 +15,24 @@ export default class TagsSelect extends React.Component {
     }
     getTags(input, callback) {
         input = input.toLowerCase();
-        if (input === '') return callback();
-        this.fetchTags(input)
-            .then((d) => {
-                const data = {
-                    options: d.data.map(i => ({ tag: i.key + '=*', value: i.key + '=*' })),
-                    complete: true
-                }
-                callback(null, data);
-            });
+        const match = this.props.topTags.filter(t => t[0].indexOf(input) > -1 || input.indexOf(t[0]) > -1);
+        if (match.length > 0) {
+            const data = {
+                options: match.map(i => ({ tag: i[0], value: i[0] })),
+                complete: false
+            }
+            callback(null, data);
+        } else {
+            if (input === '') return callback();
+            this.fetchTags(input)
+                .then((d) => {
+                    const data = {
+                        options: d.data.map(i => ({ tag: i.key, value: i.key })),
+                        complete: true
+                    }
+                    callback(null, data);
+                });
+        }
 
     }
 
