@@ -6,8 +6,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import './css/App.css';
 
 // Dev tools
-import './dev/reactotron';
-
+// import './dev/reactotron';
+// import Perf from 'react-addons-perf'
+// window.Perf = Perf;
 import App from './App';
 import store from './store';
 

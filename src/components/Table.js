@@ -276,8 +276,7 @@ export default class UserTable extends React.Component {
             type: 'objects'
         }
         this.notEmpty = R.compose(R.not, R.isEmpty);
-        this.flatten = R.curry((dataType, data) => R.compose(R.unnest, R.filter(this.notEmpty), R.map((d) => R.pluck(dataType, R.values(d[1]))))(data));
-    
+        this.flatten = R.curry((dataType, data) => R.compose(R.unnest, R.values, R.pluck(dataType))(data));
     }
     onChangeHour = () => {
         this.setState({
@@ -294,22 +293,25 @@ export default class UserTable extends React.Component {
             type: 'changesets'
         })
     }
-    findMaxMin(byUsers) {
-        let flat = this.flatten(this.state.type, byUsers);
-        if (this.state.type === 'objects') {
-            flat = flat.map((o) => o.c + o.m + o.d);
-        }
-        flat = flat.filter((a) => a !== 0 && !Number.isNaN(parseInt(a, 10)));
-        return this.mapper(R.apply(Math.min, flat), R.apply(Math.max, flat));
+    // [[uname, edit, avg, max]] => hslColorFunc
+    findMaxColor(metrics) {
+        var maxUsers = metrics.map(d => d[3]);
+        return this.mapper(0, R.apply(Math.max, maxUsers));
     }
-    findAvg(byUsers) {
-        let flat = this.flatten(this.state.type, byUsers);
-        if (this.state.type === 'objects') {
-            flat = flat.map((o) => o.c + o.m + o.d);
-        }
-        flat = flat.filter((a) => a !== 0 && !Number.isNaN(parseInt(a, 10)));
-        if (flat.length === 0) return 0;
-        let avg = parseInt(R.sum(flat)/flat.length, 10);
+    // [uname, edit] => [[name, edit, avg, max]]
+    findUserMetrics(byUsers) {
+        return byUsers.map(d => {
+            let flat = this.flatten(this.state.type, d[1]);
+            if (this.state.type === 'objects') {
+                flat = R.compose(R.unnest, R.map(R.values))(flat);
+            }
+           
+            return [d[0], d[1], parseInt(R.sum(flat) / flat.length, 10), R.apply(Math.max, flat)];
+        });
+    }
+    findAvg(metrics) {
+        var avgUsers = metrics.map(d => d[2])
+        let avg = parseInt(R.sum(avgUsers) / avgUsers.length, 10);
         return abbreviateNumber(avg);
     }
     mapper(min, max) {
@@ -332,15 +334,19 @@ export default class UserTable extends React.Component {
         const isDay = this.state.time === 'day';
         const isObjects = this.state.type === 'objects';
         const isChangesets = this.state.type === 'changesets';
+        const metrics = this.findUserMetrics(byUsers);
         let timeKeys = Object.keys(data.getByTime(this.state.time))
             .sort((a, b) => moment(a).diff(moment(b)));
+
         let timeFormat = 'DD MMM';
+
         if (isHour) {
             timeFormat = 'MM/DD HH:00';
-            timeKeys = R.takeLast(24, timeKeys);
+            timeKeys = R.takeLast(48, timeKeys);
         }
-        
-        const range = this.findMaxMin(byUsers);
+
+        const range = this.findMaxColor(metrics);
+        debugger;
         const buttons = (
             <div>
                 <div className="flex-parent-inline mx12-mm mx12-ml mx12-mxl">
@@ -357,7 +363,7 @@ export default class UserTable extends React.Component {
         return (
             <Section title="Users"
                 titleRightBottom={buttons}
-                titleBottom={`Average: ${this.findAvg(byUsers)}`}
+                titleBottom={`Average: ${this.findAvg(metrics)}`}
                 titleRight="&nbsp;"
             >
                 <div className="mx18 mt18">

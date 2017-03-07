@@ -64,3 +64,10 @@ cursor: default;
 -ms-user-select: none;
 user-select: none;
 }
+.recharts-default-legend {
+    cursor: default;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}

@@ -11,6 +11,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.4.1",
     "faker": "^4.1.0",
+    "react-addons-perf": "^15.4.2",
     "react-scripts": "0.9.0",
     "reactotron-apisauce": "^1.7.0",
     "reactotron-react-js": "^1.7.0",
@@ -54,6 +55,5 @@
   "author": "Mapbox",
   "bugs": {
     "url": "https://github.com/mapbox/osm-edit-report-v2/issues"
-  },
-  "homepage": "https://hey.mapbox.com/osm-edit-report-v2"
+  }
 }
