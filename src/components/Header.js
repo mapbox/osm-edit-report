@@ -69,7 +69,7 @@ class Header extends React.Component {
         this.setState({ selectedFilter: 'bbox' });
     }
 
-    onChange = (filters) => {
+    onChange = (filters, preventGetStats) => {
         this.props.setFilter(filters);
         this.props.getStats(filters);
     }
@@ -88,6 +88,7 @@ class Header extends React.Component {
                     filters={this.props.filters}
                     sticky={this.state.sticky}
                     loading={this.props.stats.loading}
+                    timeOfReceive={this.props.stats.timeOfReceive}
                     />
                 <div className="grid flex-parent--row-reverse">
                     {this.state.selectedFilter ?

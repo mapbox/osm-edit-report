@@ -41,7 +41,6 @@ export default class FirstGraph extends React.Component {
         })
     }
     getTodayIcon(avg, latestEdits) {
-        console.log(avg, latestEdits);
         if (latestEdits > (1.2 * avg)) {
             return <svg className='icon inline color-green'><use xlinkHref='#icon-chevron-up'/></svg>;
         }

@@ -26,10 +26,10 @@ function sumCdm(cdm) {
     return (cdm.c || 0) +( cdm.d || 0)+ (cdm.m || 0);
 }
 function getTodayIcon(avg, latestEdits) {
-    if (latestEdits >=  1.2 * avg) {
+    if (latestEdits >=  1.2 * avg && latestEdits !== 0) {
         return <svg className='icon inline color-green'><use xlinkHref='#icon-chevron-up' /></svg>;
     }
-    else if (latestEdits < 0.5 * avg) {
+    else if (latestEdits < 0.5 * avg && latestEdits !== 0) {
         return <svg className='icon inline color-red'><use xlinkHref='#icon-chevron-down' /></svg>;
     } else {
         return null;
@@ -255,7 +255,7 @@ class MyTable extends React.Component {
                         </SortHeaderCell>
                     }
                     cell={<OsmCell data={sortedDataList} />}
-                    width={150}
+                    width={160}
                 />
                 {
                     this.props.timeKeys.map(t => 
@@ -322,7 +322,6 @@ export default class UserTable extends React.Component {
         return byUsers.map(d => {
             let flat = this.flatten(this.state.type, d[1]);
             const hourSinceDayStart = moment().hour();
-            console.log(hourSinceDayStart / 24, (1 - hourSinceDayStart) / 24)
             const latestPerformance = (hourSinceDayStart / 24) * findNLatestEdit(1, d) + ((24 - hourSinceDayStart)/24)* findNLatestEdit(2,d);
             
             if (this.state.type === 'objects') {
@@ -369,7 +368,6 @@ export default class UserTable extends React.Component {
             timeFormat = 'MM/DD HH:00';
             timeKeys = R.takeLast(48, timeKeys);
         }
-
         const range = this.findMaxColor(metrics);
         const buttons = (
             <div>

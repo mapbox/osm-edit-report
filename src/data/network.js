@@ -8,15 +8,27 @@ const api = create({
     baseURL: 'https://osm-comments-api.mapbox.com/api/v1',
     headers: { 'Accept': 'application/json' }
 });
-
+const filterByKey = (fn) => R.compose(R.fromPairs, R.filter(R.apply(fn)), R.toPairs);
+const mapValues = R.curry((fn, obj) =>
+    R.fromPairs(R.map(R.adjust(fn, 1), R.toPairs(obj))));
 class Network {
+    
     get(filters) {
-        return this.apiGet(filters);
+        return this.apiGet(filters)
+            .then(d => {
+                if (filters.users) {
+                    d = this.filterByUsers(d, filters)
+                }
+                if (filters.tags) {
+                    d = this.filterByTags(d, filters);
+                }
+                return d;
+            });
     }
     getQueryStr(filters) {
         var params = [];
         if (filters) {
-            const { users, dateFrom, dateTo, tags, bbox } = filters;
+            const { dateFrom, dateTo, bbox } = filters;
             // if (users) {
             //     params.push(`users=${users}`);
             // }
@@ -35,63 +47,46 @@ class Network {
         }
         return params.length > 0 ? params.join('&') : '';
     }
-    setCache(data, filters) {
-        cache.set(this.getCacheQueryStr(filters), data);
-    }
-    getCache() {
-        let data = cache.get(this.getCacheQueryStr(this.filters));
-        if (!data) return ;
-        const filterByKey = (fn) => R.compose(R.fromPairs, R.filter(R.apply(fn)), R.toPairs);
-        const mapValues = R.curry((fn, obj) =>
-            R.fromPairs(R.map(R.adjust(fn, 1), R.toPairs(obj))));
 
-        if (this.filters.users) {
-            const filterFunc = (v) => this.filters.users.indexOf(v) > -1;
-            data = mapValues(filterByKey(filterFunc), data);
-        }
-        if (this.filters.tags) {
-            // filter by tags
-            const filterTags = (v) => this.filters.tags.indexOf(v) > -1;
-            const filterEditByTag = (k, v) => {
-                const tagsInEdits = R.keys(v.tags_created).concat(R.keys(v.tags_deleted), R.keys(v.tags_modified));
-                const tagsFilter = this.filters.tags.split(',');
-                for (let i = 0; i < tagsFilter.length; i++) {
-                    const tag = tagsFilter[i];
-                    if (tagsInEdits.indexOf(tag) > -1) {
-                        return true;
-                    }
+    filterByTags(data, filters) {
+        // filter by tags
+        const filterTags = (v) => filters.tags.indexOf(v) > -1;
+        const filterEditByTag = (k, v) => {
+            const tagsInEdits = R.keys(v.tags_created).concat(R.keys(v.tags_deleted), R.keys(v.tags_modified));
+            const tagsFilter = filters.tags.split(',');
+            for (let i = 0; i < tagsFilter.length; i++) {
+                const tag = tagsFilter[i];
+                if (tagsInEdits.indexOf(tag) > -1) {
+                    return true;
                 }
-                return false;
             }
-            const removeOtherTags = (v) => {
-                return {
-                    ...v,
-                    'tags_created': filterByKey(filterTags)(v.tags_created),
-                    'tags_deleted': filterByKey(filterTags)(v.tags_deleted),
-                    'tags_modified': filterByKey(filterTags)(v.tags_modified),
-                }
-            };
-            data = R.map(R.compose(R.map(removeOtherTags) ,filterByKey(filterEditByTag)), data);
+            return false;
         }
-        return data;
+        const removeOtherTags = (v) => {
+            return {
+                ...v,
+                'tags_created': filterByKey(filterTags)(v.tags_created),
+                'tags_deleted': filterByKey(filterTags)(v.tags_deleted),
+                'tags_modified': filterByKey(filterTags)(v.tags_modified),
+            }
+        };
+        return R.map(R.compose(R.map(removeOtherTags), filterByKey(filterEditByTag)), data);
+    }
+    filterByUsers(data, filters) {
+        const filterFunc = (v) => filters.users.indexOf(v) > -1;
+        return mapValues(filterByKey(filterFunc), data);
     }
     fillEmptyHours(data) {
-        const hours = Object.keys(data);
-        let hour = Object.keys(data)[0];
-        const last = Object.keys(data)[hours.length - 1];
-        while (hour !== last) {
+        const hours = Object.keys(data).sort((a,b) => moment(a).diff(moment(b)));
+        let hour = hours[0];
+        const last = moment(hours[hours.length - 1]);
+        while (!moment(hour).isAfter(last)) {
             const nextHour = moment(hour).add(1, 'hour').toISOString();
             if (!data[nextHour]) {
                 data[nextHour] = {};
             }
             hour = nextHour;
         }
-    }
-    filterByUserNames(users) {
-
-    }
-    filterByTags(tags) {
-
     }
     getCacheQueryStr(filters) {
         let dateFrom = filters.dateFrom.toISOString();
@@ -101,7 +96,7 @@ class Network {
     apiGet(filters) {
         // avoids caching of bbox queries
         this.filters = filters;
-        const cached = this.getCache();
+        var cached = cache.get(this.getQueryStr(filters));
         if (cached) {
             return Promise.resolve(cached);
         }
@@ -112,8 +107,8 @@ class Network {
                         return rej(d.problem);
                     }
                     this.fillEmptyHours(d.data); // mutates data
-                    this.setCache(d.data, filters);
-                    return res(this.getCache());
+                    cache.set(this.getQueryStr(filters), d.data);
+                    return res(d.data);
                 });
         })
       

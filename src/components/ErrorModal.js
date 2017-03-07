@@ -7,7 +7,7 @@ const ErrorModal = ({ showModal, message, onClose }) => {
         <div className={`grid col--offl2 col--offr2 col--8 align-items--center space-between p12 bg-red-light round-b ${isActive}`}>
             <div className="flex-child">
                 <span className="txt-bold pr12">Error.</span>
-                <span>{message || 'Internal error'}</span>
+                <span>{JSON.stringify(message)}</span>
             </div>
             <button className="flex-child align-r p12" onClick={onClose}>
                 <svg className="icon link color-darken50">

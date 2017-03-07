@@ -10,7 +10,8 @@ function stats(state = {}, action) {
         return {
             ...state,
             data: new StatsData(action.data),
-            loading: false
+            loading: false,
+            timeOfReceive: moment()
         }
     }
     case 'NETWORK_ERROR':
