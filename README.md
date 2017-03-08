@@ -17,10 +17,11 @@ Reports editing activity of the Mapbox Data Team on [OpenStreetMap](http://www.o
 
 #API and architecture
 
-This project makes use of [react](https://facebook.github.io/react/) and [redux](http://redux.js.org/docs/basics/UsageWithReact.html). It hits the [osm-comments-api/stats](https://github.com/mapbox/osm-comments-api/blob/master/API.md) end point.
+This project makes use of [react](https://facebook.github.io/react/), [redux](http://redux.js.org/docs/basics/UsageWithReact.html) and [ramda](http://ramdajs.com) . It hits the [osm-comments-api/stats](https://github.com/mapbox/osm-comments-api/blob/master/API.md) end point for the data.
+
 
 Few things to note.
-- The codebase doesnt hit the api for `user` filtering. It does it on the front-end.
-- The codebase also doesnt hit the api for `tags` filtering and does the filtering itself.
+- The codebase doesn't hit the api for `user` filtering. It does it on the front-end.
+- The codebase also doesn't hit the api for `tags` filtering and does the filtering itself.
 - It relies on http code `304` for caching identical requests.
 
