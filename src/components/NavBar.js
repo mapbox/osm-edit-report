@@ -83,7 +83,7 @@ export const MyButton = ({children, onClick, selectedFilter, filled}) => {
 
     return (
         <span>
-            <a onClick={onClick} data-for={type} className={`cursor-pointer txt-s txt-capitalize-first color-gray inline-block txt-bold transition round mb6 mb0-mm px12 py6 mr6 ${color}`}>
+            <a onClick={onClick} data-for={type} className={`cursor-pointer txt-s color-gray inline-block txt-bold transition round mb6 mb0-mm px12 py6 mr6 ${color}`}>
                 {children}{count}
             </a>
         </span>
