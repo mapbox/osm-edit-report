@@ -57,7 +57,7 @@ export default ({ toggleUsers, toggleTags, toggleDate, toggleBbox, selectedFilte
                             <MyButton filled={filters.users} selectedFilter={selectedFilter} onClick={toggleUsers} >Users</MyButton>
                             <MyButton filled={filters.tags} selectedFilter={selectedFilter} onClick={toggleTags} >Tags</MyButton>
                             <MyButton filled={filters.dateFrom || filters.dateTo} selectedFilter={selectedFilter} onClick={toggleDate}>Date</MyButton>
-                            <MyButton filled={filters.bbox} selectedFilter={selectedFilter} onClick={toggleBbox}>Bbox</MyButton>
+                            <MyButton filled={filters.bbox} selectedFilter={selectedFilter} onClick={toggleBbox}>BBox</MyButton>
                         </div>
                         <div className="header-button flex-child">
                         </div>
