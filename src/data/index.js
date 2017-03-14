@@ -4,7 +4,17 @@ import dataTeam from 'mapbox-data-team';
 window.R = R;
 window.moment = moment;
 var usernames = dataTeam.getUsernames();
+var dataTeamEverything = dataTeam.getEverything();
+function getOtherAcs(team) {
+    var zipAcs = t => R.zip(R.pluck('username', t), R.pluck('other_accounts', t))
+    return R.compose(R.fromPairs, R.map(x => [x[0], R.pluck('username', x[1])]), R.filter(u => u[1]), zipAcs)(team);
+}
+var dataTeamOtherAcs = getOtherAcs(dataTeamEverything);
+
 window.usernames = usernames;
+
+const renameKeysBy = R.curry((fn, obj) => R.pipe(R.toPairs, R.map(R.adjust(fn, 0)), R.fromPairs)(obj));
+
 /* Utils */
 // mapValues :: (v -> v) -> Object -> Object
 const mapValues = R.curry((fn, obj) =>
@@ -126,14 +136,29 @@ function getEditsByUsersByTime(unit, data) {
     const sumEditsByTime = R.curry((unit, data) => {
         return mapValues(sumEditObjs, getEditsByTime(unit)(data));
     });
+    const pluckUsers = (username, data) => {
+        const incBySecond = R.curry((n, x) => x.replace('00.000Z', `0${n}.000Z`));
+        var usersData = R.pluck(username, data);
+        const otherAcs = dataTeamOtherAcs[username] || [];
+        
+        // tiny hack which adds i seconds to timestamp to prevent main accs 
+        // date key from colliding with other_accounts key
+        var otherAcsData = otherAcs.map((ac, i) => {
+            return R.compose(renameKeysBy(incBySecond(i)), R.filter(R.identity), R.pluck(ac))(data);
+        });
+      
+        usersData = Object.assign(usersData, ...otherAcsData);
+        console.log(usersData);
+        return R.filter(R.identity, usersData);
+    }
+    const applySumEditsByTimeToUser = R.curry((username, data) => sumEditsByTime(
+        unit, pluckUsers(username, data)));
 
-    const pluckUserName = R.curry((username, data) => sumEditsByTime(unit, R.filter(R.identity, R.pluck(username, data))));
-
-    const pluckUserNames = R.map(pluckUserName, usernames);
+    const applySumEditsByTimeToAllUsers = R.map(applySumEditsByTimeToUser, usernames);
 
     return R.zipObj(
         usernames,
-        R.juxt(pluckUserNames)(data)
+        R.juxt(applySumEditsByTimeToAllUsers)(data)
     );
 }
 window.getEditsByUsersByTime = getEditsByUsersByTime;
