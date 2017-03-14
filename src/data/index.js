@@ -148,7 +148,6 @@ function getEditsByUsersByTime(unit, data) {
         });
       
         usersData = Object.assign(usersData, ...otherAcsData);
-        console.log(usersData);
         return R.filter(R.identity, usersData);
     }
     const applySumEditsByTimeToUser = R.curry((username, data) => sumEditsByTime(
