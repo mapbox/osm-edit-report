@@ -17,19 +17,12 @@ export default class DateSelect extends React.Component {
         });
     }
     onChangeFrom = (_d) => {
-        const d = moment(_d.toISOString());
-        this.setState({dateFrom: d.startOf('day').add(0.5, 'hour')});
+        console.log(_d.toISOString())
+        this.setState({dateFrom: _d});
     }
     onChangeTo = (_d) => {
-        const d = moment(_d.toISOString());
-        let dateTo;
-        if (d.startOf('day').isSame(moment(), 'day')) {
-            dateTo = moment().endOf('hour');
-        } else {
-            dateTo = d.clone().endOf('day').subtract(0.5, 'hour')
-        ;
-        }
-        this.setState({dateTo});
+        console.log(_d.toISOString())
+        this.setState({ dateTo: _d});
     }
     handleClick = () => {
         let filterValues = this.props.filterValues;
@@ -40,6 +33,7 @@ export default class DateSelect extends React.Component {
     render() {
 
         return (
+            <div className="flex-parent flex-parent--column space-around">
             <div className="flex-parent flex-parent--row space-around">
                 <DatePicker
                     className="input my6 w-full"
@@ -60,10 +54,14 @@ export default class DateSelect extends React.Component {
                     endDate={this.state.dateTo}
                     onChange={this.onChangeTo}
                     maxDate={moment()}
-                />
+               />
                 <div className="block align-center mt12">
                     <PillButton classes="mx6" onClick={this.handleClick}>Apply</PillButton>
                 </div>
+            </div>
+                <span className="txt-xs pl6">* Please note time is in UTC. This is {(moment().utcOffset()) / 60 } hours of your local time.
+                </span>
+
             </div>
         )
     }

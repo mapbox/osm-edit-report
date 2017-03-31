@@ -33,10 +33,13 @@ class Network {
             //     params.push(`users=${users}`);
             // }
             if (moment.isMoment(dateFrom)) {
-                params.push(`from=${dateFrom.toISOString()}`);
+                var _dateFrom = dateFrom.clone();
+                var utcDateFrom = (_dateFrom.add('minute', moment().utcOffset())).toISOString();
+                params.push(`from=${utcDateFrom}`);
             }
             if (moment.isMoment(dateTo)) {
-                params.push(`to=${dateTo.toISOString()}`);
+                var utcDateTo = dateTo.clone().add('minute', moment().utcOffset()).toISOString();
+                params.push(`to=${utcDateTo}`);
             }
             // if (tags) {
             //     params.push(`tags=${tags}`);
@@ -80,7 +83,7 @@ class Network {
         const hours = Object.keys(data).sort((a,b) => moment(a).diff(moment(b)));
         let hour = hours[0];
         const last = moment(hours[hours.length - 1]);
-        while (!moment(hour).isAfter(last)) {
+        while (!moment(hour).add(1, 'hour').isAfter(last)) {
             const nextHour = moment(hour).add(1, 'hour').toISOString();
             if (!data[nextHour]) {
                 data[nextHour] = {};

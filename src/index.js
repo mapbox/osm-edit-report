@@ -4,7 +4,6 @@ import {Provider} from 'react-redux';
 import 'react-select/dist/react-select.css';
 import 'react-datepicker/dist/react-datepicker.css';
 import './css/App.css';
-
 // Dev tools
 // import './dev/reactotron';
 // import Perf from 'react-addons-perf'
