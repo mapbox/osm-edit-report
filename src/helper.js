@@ -2,7 +2,7 @@ import queryString from 'query-string';
 import moment from 'moment';
 
 export function getUrlParam(n) {
-    var parsed = queryString.parse(location.search);
+    var parsed = queryString.parse(window.location.search);
     return parsed[n];
 }
 export function setUrlParams(obj) {
@@ -40,7 +40,7 @@ export function setUrlParams(obj) {
 }
 export function setUrlParam(keyArg, valueArg) {
     var hash = window.location.hash;
-    var parsed = queryString.parse(location.search);
+    var parsed = queryString.parse(window.location.search);
     if (!valueArg || valueArg === '') {
         delete parsed[keyArg];
     } else {
