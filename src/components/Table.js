@@ -352,6 +352,7 @@ export default class UserTable extends React.Component {
     }
     render() {
         const data = this.props.data;
+        console.log(data);
         if (!data) return null;
         const byUsers = R.toPairs(data.getByUsersByTime(this.state.time)).sort((a, b) => a[0].localeCompare(b[0])).filter(a => this.notEmpty(a[1]));
         const isHour = this.state.time === 'hour';
@@ -361,6 +362,7 @@ export default class UserTable extends React.Component {
         let timeKeys = Object.keys(data.getByTime(this.state.time))
             .sort((a, b) => moment(a).diff(moment(b)));
         const metrics = this.findUserMetrics(byUsers, timeKeys);
+            console.log(metrics)
 
         let timeFormat = 'DD MMM';
 
@@ -374,7 +376,6 @@ export default class UserTable extends React.Component {
                 <div className="flex-parent-inline mx12-mm mx12-ml mx12-mxl">
                     <PillButton active={isObjects} onClick={this.onChangeObjects} classes='btn--pill-hl'>Objects</PillButton>
                     <PillButton active={isChangesets} onClick={this.onChangeChangeSets} classes='btn--pill-hr'>Changesets</PillButton>
-
                 </div>
                 <div className="flex-parent-inline mt6">
                     <PillButton active={isHour} onClick={this.onChangeHour} classes='btn--pill-hl'>Hourly</PillButton>

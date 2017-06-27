@@ -7,13 +7,13 @@ export function getUrlParam(n) {
 }
 export function setUrlParams(obj) {
     if (obj.dateFrom && moment.isMoment(obj.dateFrom)) {
-        setUrlParam('dateFrom', obj.dateFrom.utc().format());
+        setUrlParam('dateFrom', obj.dateFrom.toISOString());
     } else {
         setUrlParam('dateFrom', '');
     }
 
     if (obj.dateTo && moment.isMoment(obj.dateTo)) {
-        setUrlParam('dateTo', obj.dateTo.utc().format());
+        setUrlParam('dateTo', obj.dateTo.toISOString());
     } else {
         setUrlParam('dateTo', '');
     }

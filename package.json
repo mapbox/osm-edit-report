@@ -30,6 +30,7 @@
     "ramda": "^0.24.1",
     "react": "^15.5.4",
     "react-datepicker": "^0.47.0",
+    "react-day-picker": "^6.0.4",
     "react-dimensions": "^1.3.0",
     "react-dom": "^15.5.4",
     "react-redux": "^5.0.2",
@@ -57,5 +58,5 @@
   "bugs": {
     "url": "https://github.com/mapbox/osm-edit-report/issues"
   },
-  "homepage": "https://hey.mapbox.com/osm-edit-report"
+  "homepage": "https://mapbox.com/osm-edit-report"
 }

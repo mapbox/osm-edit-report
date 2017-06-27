@@ -30,7 +30,8 @@ class FiltersBar extends React.Component {
         const CurComp = this.getComp();
         const { sticky } = this.props;
         return (
-            <div style={{ position: 'fixed', top: sticky ? 30 :''}} id="filters-bar" className="bg-white z5 filters-bar col col--10 col--6-mm col--4-ml col--3-mxl border border--gray-light p12 round-b">
+            <div style={{ position: 'fixed', top: sticky ? 30 :''}} id="filters-bar" className={`bg-white z5 filters-bar 
+            ${this.props.selectedFilter === 'date' ? '': ' col col--10 col--6-mm col--4-ml col--3-mxl'} border border--gray-light p12 round-b`}>
                     <CurComp 
                         filterValues={this.props.filterValues}
                         onChange={this.props.onChange}

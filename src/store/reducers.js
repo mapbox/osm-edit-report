@@ -41,9 +41,9 @@ const filterState = {
 }
 
 if (!filterState.dateFrom) {
-    const now = moment().endOf('hour');
+    const now = moment();
     filterState.dateFrom = now.clone().subtract(7, 'd').startOf('day');
-    filterState.dateTo = now.clone().endOf('hour');
+    filterState.dateTo = now.clone();
 }
 
 function filters(state = filterState, action) {

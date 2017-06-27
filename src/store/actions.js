@@ -1,4 +1,3 @@
-import moment from 'moment';
 import network from '../data/network'
 function requestStats() {
     return {
