@@ -4079,9 +4079,9 @@ map-obj@^1.0.0, map-obj@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/map-obj/-/map-obj-1.0.1.tgz#d933ceb9205d82bdcf4886f6742bdc2b4dea146d"
 
-mapbox-data-team@^1.4.5:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/mapbox-data-team/-/mapbox-data-team-1.4.5.tgz#f1b94b023ea69fb649c8c23ab77133671aeef1d0"
+mapbox-data-team@^1.4.10:
+  version "1.4.10"
+  resolved "https://registry.yarnpkg.com/mapbox-data-team/-/mapbox-data-team-1.4.10.tgz#88b7e7d721fb40d60ad771ca27ec818b36719403"
   dependencies:
     lodash.uniq "^4.5.0"
     tape "^4.5.1"
