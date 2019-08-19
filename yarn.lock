@@ -4066,8 +4066,8 @@ lscache@^1.1.0:
   resolved "https://registry.yarnpkg.com/lscache/-/lscache-1.1.0.tgz#cbcf2df9ccf634f3c8f9c659bcbe044d6f73b860"
 
 macaddress@^0.2.8:
-  version "0.2.8"
-  resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.8.tgz#5904dc537c39ec6dbefeae902327135fa8511f12"
+  version "0.2.9"
+  resolved "https://registry.yarnpkg.com/macaddress/-/macaddress-0.2.9.tgz#3579b8b9acd5b96b4553abf0f394185a86813cb3"
 
 makeerror@1.0.x:
   version "1.0.11"
