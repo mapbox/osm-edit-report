@@ -25,7 +25,7 @@
     "lodash.debounce": "^4.0.8",
     "lscache": "^1.1.0",
     "mapbox-data-team": "^1.4.10",
-    "moment": "^2.18.1",
+    "moment": "^2.19.3",
     "query-string": "^4.3.4",
     "ramda": "^0.24.1",
     "react": "^15.5.4",
